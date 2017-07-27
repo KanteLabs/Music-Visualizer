@@ -1,0 +1,22 @@
+{
+  "name": "threejs-examples",
+  "version": "1.0.0",
+  "description": "example threejs codes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KanteLabs/ThreeJs-Examples.git"
+  },
+  "author": "Amidou Kante",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KanteLabs/ThreeJs-Examples/issues"
+  },
+  "homepage": "https://github.com/KanteLabs/ThreeJs-Examples#readme",
+  "dependencies": {
+    "three": "^0.86.0"
+  }
+}
