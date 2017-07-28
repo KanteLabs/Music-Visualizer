@@ -1,0 +1,1 @@
+//Three js is capable of having multiple scenes and each one can have different objects
