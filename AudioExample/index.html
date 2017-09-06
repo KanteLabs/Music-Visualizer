@@ -12,7 +12,7 @@
             left: 0;
             z-index: 999;
         }
-        #audio{
+        audio{
             position: absolute;
             bottom: 1em;
         }
@@ -28,7 +28,7 @@
     <body>
         <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
         <canvas id="oscilloscope"></canvas>
-        <audio id="audio" autoplay="true" controls></audio>
+        <div class="audio-container"></div>
         <script src="./main.js"></script>
     </body>
 </html>
