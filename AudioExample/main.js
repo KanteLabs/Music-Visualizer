@@ -32,48 +32,69 @@ audioFile.onchange = (event) =>{
     analyser.connect(audioCtx.destination)
     console.log(analyser.connect(audioCtx.destination))
 
-    analyser.fftSize = 2048;
+    analyser.fftSize = 256; // 256 or 2048
     var bufferLength = analyser.frequencyBinCount;
+    console.log(bufferLength)
     var dataArray = new Uint8Array(bufferLength)
-
-    // analyser.getByteTimeDomainData(dataArray)
-    // console.log(dataArray)
 
     var WIDTH = canvas.width;
     var HEIGHT = canvas.height;
     canvasCtx.clearRect(0,0,WIDTH,HEIGHT)
 
-    function draw(){
-        drawVisual = requestAnimationFrame(draw);
-        analyser.getByteTimeDomainData(dataArray);
+    function drawBars(){
+        drawVisual = requestAnimationFrame(drawBars);
+        analyser.getByteFrequencyData(dataArray);
 
         canvasCtx.fillStyle = 'rgb(200, 200, 200)';
         canvasCtx.fillRect(0,0,WIDTH,HEIGHT);
 
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'rgb(0,0,0)';
-
-        canvasCtx.beginPath()
-
-        var sliceWidth = WIDTH * 1.0 / bufferLength;
+        var barWidth = (WIDTH / bufferLength) * 2.5;
+        var barHeight;
         var x = 0;
 
-        for(var i = 0; i < bufferLength; i++){
-            var v = dataArray[i] / 128.0;
-            var y = v * HEIGHT/2;
-            if(i === 0) {
-              canvasCtx.moveTo(x, y);
-            } else {
-              canvasCtx.lineTo(x, y);
-            }
-            x += sliceWidth;
+        for(var i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i];
+    
+            canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+            canvasCtx.fillRect(x,HEIGHT-barHeight,barWidth,barHeight);
+    
+            x += barWidth + 1;
         }
-
-        canvasCtx.lineTo(canvas.width, canvas.height/2);
-        canvasCtx.stroke();
     }
 
-    draw()
+    drawBars();
+
+    // function drawVocal(){
+    //     drawVisual = requestAnimationFrame(draw);
+    //     analyser.getByteTimeDomainData(dataArray);
+
+    //     canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+    //     canvasCtx.fillRect(0,0,WIDTH,HEIGHT);
+
+    //     canvasCtx.lineWidth = 2;
+    //     canvasCtx.strokeStyle = 'rgb(0,0,0)';
+
+    //     canvasCtx.beginPath()
+
+    //     var sliceWidth = WIDTH * 1.0 / bufferLength;
+    //     var x = 0;
+
+    //     for(var i = 0; i < bufferLength; i++){
+    //         var v = dataArray[i] / 128.0;
+    //         var y = v * HEIGHT/2;
+    //         if(i === 0) {
+    //           canvasCtx.moveTo(x, y);
+    //         } else {
+    //           canvasCtx.lineTo(x, y);
+    //         }
+    //         x += sliceWidth;
+    //     }
+
+    //     canvasCtx.lineTo(canvas.width, canvas.height/2);
+    //     canvasCtx.stroke();
+    // }
+
+    // drawVocal()
 }
 
 }
