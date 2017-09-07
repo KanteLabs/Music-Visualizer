@@ -61,7 +61,22 @@
                 //Prevents local memory of audio files so you can create a new instance on upload
                 audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
                 audioPlayer.load(), audioPlayer.play(), audioPlayer.controls = true;
-                }
+
+                 // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
+                var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                var analyser = audioCtx.createAnalyser();
+                
+                source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
+                source.connect(analyser)
+                analyser.connect(audioCtx.destination)
+                console.log(analyser.connect(audioCtx.destination))
+
+                analyser.fftSize = 256; // 256 or 2048
+                var bufferLength = analyser.frequencyBinCount;
+                console.log(bufferLength)
+                var dataArray = new Uint8Array(bufferLength)
+
+            }
             </script>
     </body>
 </html>
