@@ -1,5 +1,11 @@
 window.onload = function() {
 var audioFile = document.querySelector('#audioFile');
+var canvas = document.querySelector('#oscilloscope');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var canvasCtx = canvas.getContext('2d');
+
+
 // var audioPlayer = document.querySelector('#audio');
 
 audioFile.onchange = (event) =>{
@@ -24,8 +30,50 @@ audioFile.onchange = (event) =>{
     source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
     source.connect(analyser)
     analyser.connect(audioCtx.destination)
+    console.log(analyser.connect(audioCtx.destination))
 
-    
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.frequencyBinCount;
+    var dataArray = new Uint8Array(bufferLength)
+
+    // analyser.getByteTimeDomainData(dataArray)
+    // console.log(dataArray)
+
+    var WIDTH = canvas.width;
+    var HEIGHT = canvas.height;
+    canvasCtx.clearRect(0,0,WIDTH,HEIGHT)
+
+    function draw(){
+        drawVisual = requestAnimationFrame(draw);
+        analyser.getByteTimeDomainData(dataArray);
+
+        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+        canvasCtx.fillRect(0,0,WIDTH,HEIGHT);
+
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'rgb(0,0,0)';
+
+        canvasCtx.beginPath()
+
+        var sliceWidth = WIDTH * 1.0 / bufferLength;
+        var x = 0;
+
+        for(var i = 0; i < bufferLength; i++){
+            var v = dataArray[i] / 128.0;
+            var y = v * HEIGHT/2;
+            if(i === 0) {
+              canvasCtx.moveTo(x, y);
+            } else {
+              canvasCtx.lineTo(x, y);
+            }
+            x += sliceWidth;
+        }
+
+        canvasCtx.lineTo(canvas.width, canvas.height/2);
+        canvasCtx.stroke();
+    }
+
+    draw()
 }
 
 }
