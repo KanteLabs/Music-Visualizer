@@ -1,7 +1,6 @@
 window.onload = function() {
 var audioFile = document.querySelector('#audioFile');
 var canvas = document.querySelector('#oscilloscope');
-var THREE = require('three')
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var canvasCtx = canvas.getContext('2d');
