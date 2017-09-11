@@ -12,7 +12,7 @@ There will be different rendering outputs depending on the frequency data that i
     - cone []
     - pyramid []
     - prism []
-    - dodecahedron
+    - dodecahedron []
 - can generate a random shape on every upload []
 - camera functions [x]
 - have features of shape determined by song data
@@ -21,3 +21,8 @@ There will be different rendering outputs depending on the frequency data that i
   - amount of sizes []
   - rotation speed []
 
+## Tech/Tools
+Three.js with WebGL
+  - VR options for Google Cardboard(bonus)
+  - Optional Aframe
+  - Geometry & Trigonometry
