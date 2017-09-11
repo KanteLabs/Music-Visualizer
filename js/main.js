@@ -29,7 +29,7 @@ window.onload = function() {
         analyser.connect(audioCtx.destination)
         console.log(analyser.connect(audioCtx.destination))
     
-        analyser.fftSize = 1024; // 256 or 2048
+        analyser.fftSize = 256; // 256 or 2048
         var bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength)
         var dataArray = new Uint8Array(bufferLength)
@@ -63,8 +63,25 @@ window.onload = function() {
             }
             i++;
         }
+
         var light = new THREE.AmbientLight(0x505050);
         scene.add(light);
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(0, 1, 1);
+        scene.add(directionalLight);
+        
+        directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(1, 1, 0);
+        scene.add(directionalLight);
+        
+        
+        directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(0, -1, -1);
+        scene.add(directionalLight);
+        
+        directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(-1, -1, 0);
+        scene.add(directionalLight);
         camera.position.z = 5;
 
 
