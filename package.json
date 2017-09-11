@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/KanteLabs/ThreeJs-Examples#readme",
   "dependencies": {
+    "aframe-audioanalyser-component": "^3.0.3",
     "three": "^0.86.0"
   }
 }
