@@ -33,16 +33,12 @@ window.onload = function() {
         var bufferLength = analyser.frequencyBinCount;
         console.log(bufferLength)
         var dataArray = new Uint8Array(bufferLength)
-    
-        // var WIDTH = canvas.width;
-        // var HEIGHT = canvas.height;
-        // canvasCtx.clearRect(0,0,WIDTH,HEIGHT)
 
         //3 main important things for 3JS, a scene, camera, and renderer. -> render the scene with a camera
         var scene = new THREE.Scene(); //new scene instance
         var cubes = new Array();
-        //new camera type which is a PerspectiveCamera(setsFieldOfView, aspectRatio(widthOfElement/HeightOfElement), nearClipping, farClipping)
-        var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+        var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 1, 1000 );
+        var controls;
 
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight); //or (window.innerWidth/2, Window.innerHeight/2, false) to set a smaller a resolution 
@@ -55,57 +51,39 @@ window.onload = function() {
                 var geometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
                 var material = new THREE.MeshPhongMaterial({
                     color: (Math.random() * 0xffffff),
-                    ambient: 0x808080,
+                    // ambient: 0x808080,
                     specular: 0xffffff,
                     shininess: 20,
                     reflectivity: 5.5
                 });
+                cubes[i][j] = new THREE.Mesh(geometry, material); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
+                cubes[i][j].position = new THREE.Vector3(x, y, 0);
+                scene.add(cubes[i][j])
+                j++;
             }
+            i++;
         }
-        var cube = new THREE.Mesh(geometry, material) //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
-        scene.add(cube)
-
+        var light = new THREE.AmbientLight(0x505050);
+        scene.add(light);
         camera.position.z = 5;
 
+
+        controls = new THREE.OrbitControls(camera);
+
         function animate(){
+            var k = 0;
+            for(var i = 0; i < cubes.length; i++) {
+                for(var j = 0; j < cubes[i].length; j++) {
+                    var scale = dataArray[k] / 30;
+                    cubes[i][j].scale.z = (scale < 1 ? 1 : scale);
+                    k += (k < dataArray.length ? 1 : 0);
+                }
+            }
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
-            cube.rotation.x += 0.01; //controls the x rotation speed
-            cube.rotation.y += 0.01; //controls the y rotation speed
+            controls.update();            
             renderer.render(scene, camera)
         }
         animate() //gets called 60x per sec to render scene
-
-        // function drawVocal(){
-        //     drawVisual = requestAnimationFrame(drawVocal);
-        //     analyser.getByteTimeDomainData(dataArray);
-    
-        //     canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-        //     canvasCtx.fillRect(0,0,WIDTH,HEIGHT);
-    
-        //     canvasCtx.lineWidth = 2;
-        //     canvasCtx.strokeStyle = 'rgb(0,0,0)';
-    
-        //     canvasCtx.beginPath()
-    
-        //     var sliceWidth = WIDTH * 1.0 / bufferLength;
-        //     var x = 0;
-    
-        //     for(var i = 0; i < bufferLength; i++){
-        //         var v = dataArray[i] / 128.0;
-        //         var y = v * HEIGHT/2;
-        //         if(i === 0) {
-        //           canvasCtx.moveTo(x, y);
-        //         } else {
-        //           canvasCtx.lineTo(x, y);
-        //         }
-        //         x += sliceWidth;
-        //     }
-    
-        //     canvasCtx.lineTo(canvas.width, canvas.height/2);
-        //     canvasCtx.stroke();
-        // }
-    
-        // drawVocal()
     }
     
     }
