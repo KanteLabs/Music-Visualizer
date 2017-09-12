@@ -40,6 +40,7 @@ window.onload = function() {
         scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
         var cubes = new Array();
         var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 1, 1000 );
+        var previousCameraPosition = new THREE.Vector3();
         var controls;
 
         var renderer = new THREE.WebGLRenderer();
@@ -80,6 +81,8 @@ window.onload = function() {
             mesh.position.x = ( Math.random() - 0.5 ) * 1000;
             mesh.position.y = ( Math.random() - 0.5 ) * 1000;
             mesh.position.z = ( Math.random() - 0.5 ) * 1000;
+            mesh.scale.set(Math.random() * 2, Math.random() * 2, Math.random() * 2)
+            mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
             mesh.updateMatrix();
             mesh.matrixAutoUpdate = false;
             scene.add( mesh );
@@ -110,22 +113,22 @@ window.onload = function() {
 
 
         controls = new THREE.OrbitControls(camera);
-
         function animate(){
+            controls.autoRotate = true;
+            controls.update();            
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
             analyser.getByteFrequencyData(dataArray)
-            console.log(analyser.maxDecibels)
             var k = 0;
             for(var i = 0; i < cubes.length; i++) {
                 for(var j = 0; j < cubes[i].length; j++) {
                     var scale = dataArray[k] / 30;
                     cubes[i][j].scale.z = (scale < 1 ? 1 : scale);
                     k += (k < dataArray.length ? 1 : 0);
-                    cubes[i][j].rotation.y += 0.007;
+                    // cubes[i][j].rotation.y += 0.007;
                 }
             }
-            controls.update();            
             renderer.render(scene, camera)
+            previousCameraPosition.copy(camera.position)
         }
         animate() //gets called 60x per sec to render scene
     }

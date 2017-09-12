@@ -20,6 +20,11 @@ There will be different rendering outputs depending on the frequency data that i
   - size []
   - amount of sizes []
   - rotation speed []
+- controls option to change certain things
+  - camera rotation []
+  - different shapes []
+  - shape color []
+  - shape size []
 
 ## Tech/Tools
 Three.js with WebGL
