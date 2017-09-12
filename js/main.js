@@ -36,32 +36,51 @@ window.onload = function() {
 
         //3 main important things for 3JS, a scene, camera, and renderer. -> render the scene with a camera
         var scene = new THREE.Scene(); //new scene instance
+        scene.background = new THREE.Color( 0xcccccc );
+        scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
         var cubes = new Array();
         var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 1, 1000 );
         var controls;
 
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight); //or (window.innerWidth/2, Window.innerHeight/2, false) to set a smaller a resolution 
-        document.body.appendChild(renderer.domElement) //adds renderer to the DOM
+        document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement) //adds renderer to the DOM
+
+        var geometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
+        var material = new THREE.MeshPhongMaterial({
+            color: (Math.random() * 0xffffff),
+            // ambient: 0x808080,
+            specular: 0xffffff,
+            shininess: 20,
+            reflectivity: 5.5
+        });
+
         var i = 0;
         for(var x = 0; x < 30; x += 2){
             var j = 0;
             cubes[i] = new Array();
             for(var y = 0; y < 30; y += 2){
-                var geometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
-                var material = new THREE.MeshPhongMaterial({
-                    color: (Math.random() * 0xffffff),
-                    // ambient: 0x808080,
-                    specular: 0xffffff,
-                    shininess: 20,
-                    reflectivity: 5.5
-                });
                 cubes[i][j] = new THREE.Mesh(geometry, material); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
                 cubes[i][j].position = new THREE.Vector3(x, y, 0);
                 scene.add(cubes[i][j])
                 j++;
             }
             i++;
+        }
+
+        var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
+        var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
+
+        for ( var i = 0; i < 500; i ++ ) {
+
+            var mesh = new THREE.Mesh( geometry, material );
+            mesh.position.x = ( Math.random() - 0.5 ) * 1000;
+            mesh.position.y = ( Math.random() - 0.5 ) * 1000;
+            mesh.position.z = ( Math.random() - 0.5 ) * 1000;
+            mesh.updateMatrix();
+            mesh.matrixAutoUpdate = false;
+            scene.add( mesh );
+
         }
 
         var light = new THREE.AmbientLight(0x505050);
@@ -88,12 +107,18 @@ window.onload = function() {
         controls = new THREE.OrbitControls(camera);
 
         function animate(){
+            cubes[1][1].rotation.x += 0.02;
+            cubes[1][1].rotation.y += 0.02;
+            cubes[1][1].rotation.z += 0.02;
             var k = 0;
             for(var i = 0; i < cubes.length; i++) {
                 for(var j = 0; j < cubes[i].length; j++) {
                     var scale = dataArray[k] / 30;
                     cubes[i][j].scale.z = (scale < 1 ? 1 : scale);
                     k += (k < dataArray.length ? 1 : 0);
+                    // cubes[i][j].rotation.x += 0.02;
+                    // cubes[i][j].rotation.y += 0.02;
+                    // cubes[i][j].rotation.z += 0.02;
                 }
             }
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
