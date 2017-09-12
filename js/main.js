@@ -62,7 +62,7 @@ window.onload = function() {
             for(var y = 0; y < 60; y += 1){
                 cubes[i][j] = new THREE.Mesh(geometry, material); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
                 cubes[i][j].position.x = (x);
-                cubes[i][j].position.y = (j-30);
+                cubes[i][j].position.y = (j-35);
                 cubes[i][j].position.z = (0);
                 // cubes[i][j].position.z = (Math.random() * (100 - 0) + 0);
                 scene.add(cubes[i][j])
@@ -114,6 +114,7 @@ window.onload = function() {
         function animate(){
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
             analyser.getByteFrequencyData(dataArray)
+            console.log(analyser.maxDecibels)
             var k = 0;
             for(var i = 0; i < cubes.length; i++) {
                 for(var j = 0; j < cubes[i].length; j++) {
