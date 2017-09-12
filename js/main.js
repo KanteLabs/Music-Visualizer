@@ -36,7 +36,7 @@ window.onload = function() {
 
         //3 main important things for 3JS, a scene, camera, and renderer. -> render the scene with a camera
         var scene = new THREE.Scene(); //new scene instance
-        scene.background = new THREE.Color( 0xcccccc );
+        scene.background = new THREE.Color( 0x000000);
         scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
         var cubes = new Array();
         var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 1, 1000 );
@@ -110,7 +110,6 @@ window.onload = function() {
         // camera.position.x = 50;
         // camera.position.y = -50;
         camera.position.z = 50;
-
 
         controls = new THREE.OrbitControls(camera);
         function animate(){
