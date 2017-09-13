@@ -18,7 +18,7 @@ window.onload = function() {
         
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
-        audioPlayer.load(), audioPlayer.play(), audioPlayer.controls = true;
+        audioPlayer.load(), /*audioPlayer.play(),*/ audioPlayer.controls = true;
         
         // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
         var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
@@ -66,7 +66,7 @@ window.onload = function() {
             cubes[i] = new Array();
             for(var y = 0; y <= 62; y += 2){
                 cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
-                cubes[i][j].position.x = (y);
+                cubes[i][j].position.x = (y-30);
                 cubes[i][j].position.y = (0);
                 cubes[i][j].position.z = (x);
                 // cubes[i][j].position.z = (Math.random() * (100 - 0) + 0);
@@ -77,7 +77,7 @@ window.onload = function() {
         }
 
         var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-        var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: true } );
+        var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
 
         for ( var i = 0; i < 500; i ++ ) {
 
