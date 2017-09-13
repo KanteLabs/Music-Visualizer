@@ -39,21 +39,26 @@ window.onload = function() {
         scene.background = new THREE.Color( 0x000000);
         scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
         var cubes = new Array();
-        var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 1, 1000 );
-        var previousCameraPosition = new THREE.Vector3();
+        var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
+        camera.position.x = 32;
+        camera.position.y = 50;
+        camera.position.z = 50;
+        console.log(camera.position)
         var controls;
 
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight); //or (window.innerWidth/2, Window.innerHeight/2, false) to set a smaller a resolution 
         document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement) //adds renderer to the DOM
 
-        var geometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
-        var material = new THREE.MeshPhongMaterial({
+        var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
+        var cubeMaterial = new THREE.MeshPhongMaterial({
             color: (Math.random() * 0xffffff),
-            metalness: 1,
+            flatShading: true,
             specular: 0xffffff,
             shininess: 14,
-            reflectivity: 2
+            reflectivity: 2,
+            fog: false,
+            morphTargets: true
         });
 
         var i = 0;
@@ -61,7 +66,7 @@ window.onload = function() {
             var j = 0;
             cubes[i] = new Array();
             for(var y = 0; y <= 62; y += 2){
-                cubes[i][j] = new THREE.Mesh(geometry, material); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
+                cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
                 cubes[i][j].position.x = (y);
                 cubes[i][j].position.y = (0);
                 cubes[i][j].position.z = (x);
@@ -73,7 +78,7 @@ window.onload = function() {
         }
 
         var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-        var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
+        var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: true } );
 
         for ( var i = 0; i < 500; i ++ ) {
 
@@ -88,6 +93,18 @@ window.onload = function() {
             scene.add( mesh );
 
         }
+
+        // var sphereGeo = new THREE.SphereGeometry(10, 64, 64)
+        // var sphereMaterial = new THREE.MeshPhongMaterial({
+        //     color: (Math.random() * 0xffffff),
+        //     metalness: 1,
+        //     specular: 0xffffff,
+        //     shininess: 14,
+        //     reflectivity: 2
+        // })
+
+        // var sphere = new THREE.Mesh(sphereGeo, sphereMaterial)
+        // scene.add(sphere)
 
         var light = new THREE.AmbientLight(0x505050);
         scene.add(light);
@@ -107,36 +124,26 @@ window.onload = function() {
         directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
         directionalLight.position.set(-1, -1, 0);
         scene.add(directionalLight);
-        // camera.position.x = 50;
-        // camera.position.y = -50;
-        camera.position.z = 50;
 
         controls = new THREE.OrbitControls(camera);
         function animate(){
             controls.autoRotate = false;
-
             controls.update();            
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
             analyser.getByteFrequencyData(dataArray)
+
+            
             var k = 0;
             for(var i = 0; i < cubes.length; i++) {
                 for(var j = 0; j < cubes[i].length; j++) {
                     var scale = dataArray[k] / 10;
                     cubes[i][j].scale.y = (scale < 1 ? 1 : scale);
                     k += (k < dataArray.length ? 1 : 0);
-                    // cubes[i][j].rotation.y += 0.007;
                 }
             }
             renderer.render(scene, camera)
-            previousCameraPosition.copy(camera.position)
         }
         animate() //gets called 60x per sec to render scene
     }
     
     }
-    
-    /* 
-    
-    var fileName = document.querySelector('input[name="newAudioFile"]').files[0].name
-    
-    */
