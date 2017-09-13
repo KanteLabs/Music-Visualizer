@@ -110,32 +110,14 @@ analyzeAudio = (audioPlayer) => {
     var asteroidGeometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
     var asteroidMaterial = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
 
-    var i = 0;
-    for(var x = 0; x <= 256; x += 2){
-        var j = 0;
-        cubes[i] = new Array();
-        for(var y = 0; y <= 62; y += 2){
-            cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            cubes[i][j].position.x = (y-30);
-            cubes[i][j].position.y = (0);
-            cubes[i][j].position.z = (x);
-            scene.add(cubes[i][j])
-            j++;
-        }
-        i++;
-    }
-    
-    for ( var i = 0; i < 500; i ++ ) {
-        var mesh = new THREE.Mesh( asteroidGeometry, asteroidMaterial );
-        mesh.position.x = ( Math.random() - 0.5 ) * 1000;
-        mesh.position.y = ( Math.random() - 0.5 ) * 1000;
-        mesh.position.z = ( Math.random() - 0.5 ) * 1000;
-        mesh.scale.set(Math.random() * 2, Math.random() * 2, Math.random() * 2)
-        mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-        mesh.updateMatrix();
-        mesh.matrixAutoUpdate = false;
-        scene.add( mesh );
-
+    for(var x = 0; x < 1000; x++){
+        asteroidMesh[x] = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        asteroidMesh[x].position.x = ( Math.random() - 0.5 ) * 300;
+        asteroidMesh[x].position.y = ( Math.random() - 0.5 ) * 300;
+        asteroidMesh[x].position.z = ( Math.random() - 0.5 ) * 300;
+        asteroidMesh[x].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
+        asteroidMesh[x].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+        scene.add(asteroidMesh[x])
     }
 
     // var sphereGeo = new THREE.SphereGeometry(10, 64, 64)
