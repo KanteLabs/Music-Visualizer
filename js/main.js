@@ -57,14 +57,14 @@ window.onload = function() {
         });
 
         var i = 0;
-        for(var x = 0; x < 60; x += 1){
+        for(var x = 0; x <= 256; x += 2){
             var j = 0;
             cubes[i] = new Array();
-            for(var y = 0; y < 60; y += 1){
+            for(var y = 0; y <= 62; y += 2){
                 cubes[i][j] = new THREE.Mesh(geometry, material); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
-                cubes[i][j].position.x = (x);
-                cubes[i][j].position.y = (j-35);
-                cubes[i][j].position.z = (0);
+                cubes[i][j].position.x = (y);
+                cubes[i][j].position.y = (0);
+                cubes[i][j].position.z = (x);
                 // cubes[i][j].position.z = (Math.random() * (100 - 0) + 0);
                 scene.add(cubes[i][j])
                 j++;
@@ -113,15 +113,16 @@ window.onload = function() {
 
         controls = new THREE.OrbitControls(camera);
         function animate(){
-            controls.autoRotate = true;
+            controls.autoRotate = false;
+
             controls.update();            
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
             analyser.getByteFrequencyData(dataArray)
             var k = 0;
             for(var i = 0; i < cubes.length; i++) {
                 for(var j = 0; j < cubes[i].length; j++) {
-                    var scale = dataArray[k] / 30;
-                    cubes[i][j].scale.z = (scale < 1 ? 1 : scale);
+                    var scale = dataArray[k] / 10;
+                    cubes[i][j].scale.y = (scale < 1 ? 1 : scale);
                     k += (k < dataArray.length ? 1 : 0);
                     // cubes[i][j].rotation.y += 0.007;
                 }
