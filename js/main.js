@@ -45,21 +45,8 @@ analyzeAudio = (audioPlayer) => {
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight);
     document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement)
-    
-    //Light Details
 
-    //Camera Details
-    var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
-    camera.position.x = 32;
-    camera.position.y = 50;
-    camera.position.z = 50;
-
-    //Controls Details
-    var controls;
-
-    //Shapes Details Details
-    var cubes = new Array();
-    
+    //Lighting Details
     var light = new THREE.AmbientLight(0x505050);
     scene.add(light);
     var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -79,13 +66,23 @@ analyzeAudio = (audioPlayer) => {
     directionalLight.position.set(-1, -1, 0);
     scene.add(directionalLight);
 
-    controls = new THREE.OrbitControls(camera);
+    //Camera Details
+    var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
+    camera.position.x = 32;
+    camera.position.y = 50;
+    camera.position.z = 50;
     camera.lookAt(scene.position);
 
-    var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
+    //Controls Details
+    var controls;
+    controls = new THREE.OrbitControls(camera);
+
+    //Cubes Details
+    var cubes = new Array();
+    var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5)
     var cubeMaterial = new THREE.MeshPhongMaterial({
         color: (Math.random() * 0xffffff),
-        flatShading: true,
+        flatShading: false,
         specular: 0xffffff,
         shininess: 14,
         reflectivity: 2,
@@ -98,23 +95,24 @@ analyzeAudio = (audioPlayer) => {
         var j = 0;
         cubes[i] = new Array();
         for(var y = 0; y <= 62; y += 2){
-            cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial); //Mesh is an object that takes a geometry and adds a material to it, which is insert into a scene
+            cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
             cubes[i][j].position.x = (y-30);
             cubes[i][j].position.y = (0);
             cubes[i][j].position.z = (x);
-            // cubes[i][j].position.z = (Math.random() * (100 - 0) + 0);
             scene.add(cubes[i][j])
             j++;
         }
         i++;
     }
 
-    var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-    var material = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
+    //BackgroundShapes Details
+    var asteroidMesh = new Array()
+    var asteroidGeometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
+    var asteroidMaterial = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
 
     for ( var i = 0; i < 500; i ++ ) {
 
-        var mesh = new THREE.Mesh( geometry, material );
+        var mesh = new THREE.Mesh( asteroidGeometry, asteroidMaterial );
         mesh.position.x = ( Math.random() - 0.5 ) * 1000;
         mesh.position.y = ( Math.random() - 0.5 ) * 1000;
         mesh.position.z = ( Math.random() - 0.5 ) * 1000;
