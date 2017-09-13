@@ -76,6 +76,9 @@ analyzeAudio = (audioPlayer) => {
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera);
+    // controls.autoRotate = true;
+    // controls.autoRotateSpeed = 0.5;
+    controls.update();    
 
     //Cubes Details
     var cubes = new Array();
@@ -119,6 +122,20 @@ analyzeAudio = (audioPlayer) => {
         asteroidMesh[x].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
         scene.add(asteroidMesh[x])
     }
+    console.log(asteroidMesh)
+
+    // for ( var i = 0; i < 500; i ++ ) {
+    //     var mesh = new THREE.Mesh( asteroidGeometry, asteroidMaterial );
+    //     mesh.position.x = ( Math.random() - 0.5 ) * 1000;
+    //     mesh.position.y = ( Math.random() - 0.5 ) * 1000;
+    //     mesh.position.z = ( Math.random() - 0.5 ) * 1000;
+    //     mesh.scale.set(Math.random() * 2, Math.random() * 2, Math.random() * 2)
+    //     mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+    //     mesh.updateMatrix();
+    //     mesh.matrixAutoUpdate = false;
+    //     scene.add( mesh );
+
+    // }
 
     // var sphereGeo = new THREE.SphereGeometry(10, 64, 64)
     // var sphereMaterial = new THREE.MeshPhongMaterial({
@@ -134,10 +151,7 @@ analyzeAudio = (audioPlayer) => {
 
     
 
-    function animate(){
-        // controls.autoRotate = true;
-        // controls.autoRotateSpeed = 0.5;
-        controls.update();            
+    function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
 
