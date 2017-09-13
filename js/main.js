@@ -1,9 +1,5 @@
 window.onload = function() {
-    var audioFile = document.querySelector('#audioFile');
-    // var canvas = document.querySelector('#oscilloscope');
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
-    // var canvasCtx = canvas.getContext('2d');
+    var audioFile = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
    
     audioFile.onchange = (event) =>{
         

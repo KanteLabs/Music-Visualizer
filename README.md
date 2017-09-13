@@ -18,7 +18,6 @@ There will be different rendering outputs depending on the frequency data that i
 - have features of shape determined by song data
   - color []
   - size []
-  - amount of sizes []
   - rotation speed []
 - controls option to change certain things
   - camera rotation []
