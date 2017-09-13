@@ -43,7 +43,6 @@ window.onload = function() {
         camera.position.x = 32;
         camera.position.y = 50;
         camera.position.z = 50;
-        console.log(camera.position)
         var controls;
 
         var renderer = new THREE.WebGLRenderer();
@@ -125,9 +124,10 @@ window.onload = function() {
         directionalLight.position.set(-1, -1, 0);
         scene.add(directionalLight);
 
-        controls = new THREE.OrbitControls(camera);
+        controls = new THREE.OrbitControls(camera);        
         function animate(){
-            controls.autoRotate = false;
+            // controls.autoRotate = true;
+            // controls.autoRotateSpeed = 0.5;
             controls.update();            
             requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
             analyser.getByteFrequencyData(dataArray)
