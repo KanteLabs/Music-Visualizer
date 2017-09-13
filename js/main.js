@@ -1,6 +1,10 @@
+var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+var analyser = audioCtx.createAnalyser();
+var source;
+
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
-   
+
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
@@ -21,34 +25,62 @@ window.onload = function() {
 }
 
 analyzeAudio = (audioPlayer) => {
+    console.log(`Received ${audioPlayer}`)
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
-    var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-    var analyser = audioCtx.createAnalyser();
     
     source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
     source.connect(analyser)
     analyser.connect(audioCtx.destination)
-    console.log(analyser.connect(audioCtx.destination))
 
-    analyser.fftSize = 256; // 256 or 2048
+    analyser.fftSize = 256; // 256 for analyser.getByteFrequencyData(dataArray) and 2048 for analyser.getByteTimeDomainData(dataArray)
     var bufferLength = analyser.frequencyBinCount;
     console.log(bufferLength)
     var dataArray = new Uint8Array(bufferLength)
 
-    //3 main important things for 3JS, a scene, camera, and renderer. -> render the scene with a camera
+    //Scene Details
     var scene = new THREE.Scene(); //new scene instance
     scene.background = new THREE.Color( 0x000000);
     scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
-    var cubes = new Array();
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize( window.innerWidth, window.innerHeight);
+    document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement)
+    
+    //Light Details
+
+    //Camera Details
     var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
     camera.position.x = 32;
     camera.position.y = 50;
     camera.position.z = 50;
+
+    //Controls Details
     var controls;
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth, window.innerHeight); //or (window.innerWidth/2, Window.innerHeight/2, false) to set a smaller a resolution 
-    document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement) //adds renderer to the DOM
+    //Shapes Details Details
+    var cubes = new Array();
+    
+    var light = new THREE.AmbientLight(0x505050);
+    scene.add(light);
+    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight.position.set(0, 1, 1);
+    scene.add(directionalLight);
+    
+    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight.position.set(1, 1, 0);
+    scene.add(directionalLight);
+    
+    
+    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight.position.set(0, -1, -1);
+    scene.add(directionalLight);
+    
+    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight.position.set(-1, -1, 0);
+    scene.add(directionalLight);
+
+    controls = new THREE.OrbitControls(camera);
+    camera.lookAt(scene.position);
 
     var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5) //BoxGeometry is a build in method for all the basic values of a cube
     var cubeMaterial = new THREE.MeshPhongMaterial({
@@ -106,26 +138,8 @@ analyzeAudio = (audioPlayer) => {
     // var sphere = new THREE.Mesh(sphereGeo, sphereMaterial)
     // scene.add(sphere)
 
-    var light = new THREE.AmbientLight(0x505050);
-    scene.add(light);
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(0, 1, 1);
-    scene.add(directionalLight);
     
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(1, 1, 0);
-    scene.add(directionalLight);
-    
-    
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(0, -1, -1);
-    scene.add(directionalLight);
-    
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(-1, -1, 0);
-    scene.add(directionalLight);
 
-    controls = new THREE.OrbitControls(camera);        
     function animate(){
         // controls.autoRotate = true;
         // controls.autoRotateSpeed = 0.5;
