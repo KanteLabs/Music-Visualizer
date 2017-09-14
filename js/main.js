@@ -75,10 +75,7 @@ analyzeAudio = (audioPlayer) => {
 
     //Controls Details
     var controls;
-    controls = new THREE.OrbitControls(camera);
-    // controls.autoRotate = true;
-    // controls.autoRotateSpeed = 0.5;
-    controls.update();    
+    controls = new THREE.OrbitControls(camera);  
 
     //Cubes Details
     var cubes = new Array();
@@ -109,18 +106,21 @@ analyzeAudio = (audioPlayer) => {
 
     //BackgroundShapes Details
     var asteroidMesh = new Array()
-    var asteroidGeometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-    var asteroidMaterial = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
+    var asteroidGeometry = new THREE.TetrahedronGeometry((Math.random()*5), 2);
+    var asteroidMaterial = new THREE.MeshPhongMaterial({ 
+        color: (Math.random() * 0xffffff), 
+        flatShading: true 
+    });
 
     var i = 0;
-    for(var x = 0; x < 100; x++){
+    for(var x = 0; x < 1; x++){
         var j = 0;
         asteroidMesh[i] = new Array();
-        for(var y = 0; y < 100; y+=2){
-            asteroidMesh[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            asteroidMesh[i][j].position.x = ( Math.random() - 0.5 ) * 100;
-            asteroidMesh[i][j].position.y = ( Math.random() - 0.5 ) * 100;
-            asteroidMesh[i][j].position.z = ( Math.random() - 0.5 ) * 100;
+        for(var y = 0; y < 1000; y++){
+            asteroidMesh[i][j] = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
+            asteroidMesh[i][j].position.x = ( Math.random() - 0.5 ) * 300;
+            asteroidMesh[i][j].position.y = ( Math.random() - 0.5 ) * 300;
+            asteroidMesh[i][j].position.z = ( Math.random() - 0.5 ) * 300;
             asteroidMesh[i][j].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
             asteroidMesh[i][j].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
             scene.add(asteroidMesh[x][j])
@@ -147,7 +147,9 @@ analyzeAudio = (audioPlayer) => {
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
-
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        controls.update();  
         
         var k = 0;
         for(var i = 0; i < cubes.length; i++) {
@@ -158,14 +160,14 @@ analyzeAudio = (audioPlayer) => {
             }
         }
         
-        var k = 0;
-        for(var i = 0; i < asteroidMesh.length; i++) {
-            for(var j = 0; j < asteroidMesh[i].length; j++) {
-                var scale = dataArray[k] / 10;
-                asteroidMesh[i][j].scale.z = (scale < 1 ? 1 : scale);
-                k += (k < dataArray.length ? 1 : 0);
-            }
-        }
+        // var k = 0;
+        // for(var i = 0; i < asteroidMesh.length; i++) {
+        //     for(var j = 0; j < asteroidMesh[i].length; j++) {
+        //         var scale = dataArray[k] / 30;
+        //         asteroidMesh[i][j].position.z = (scale < 1 ? 1 : scale);
+        //         k += (k < dataArray.length ? 1 : 0);
+        //     }
+        // }
         renderer.render(scene, camera)
     }
     animate() //gets called 60x per sec to render scene
