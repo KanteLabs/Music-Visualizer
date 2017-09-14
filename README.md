@@ -24,6 +24,7 @@ There will be different rendering outputs depending on the frequency data that i
   - different shapes []
   - shape color []
   - shape size []
+- option to choose different scenes []
 
 ## Tech/Tools
 Three.js with WebGL

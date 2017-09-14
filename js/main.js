@@ -129,20 +129,42 @@ analyzeAudio = (audioPlayer) => {
         i++;
     }
     console.log(asteroidMesh)
+    var mesh = new THREE.Object3D();
+    mesh.add( new THREE.LineSegments(
 
-    // var sphereGeo = new THREE.SphereGeometry(10, 64, 64)
-    // var sphereMaterial = new THREE.MeshPhongMaterial({
-    //     color: (Math.random() * 0xffffff),
-    //     metalness: 1,
-    //     specular: 0xffffff,
-    //     shininess: 14,
-    //     reflectivity: 2
-    // })
+        new THREE.Geometry(),
 
-    // var sphere = new THREE.Mesh(sphereGeo, sphereMaterial)
-    // scene.add(sphere)
+        new THREE.LineBasicMaterial( {
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.5
+        } )
 
-    
+    ) );
+
+    mesh.add( new THREE.Mesh(
+
+        new THREE.Geometry(),
+
+        new THREE.MeshPhongMaterial( {
+            color: 0x156289,
+            emissive: 0x072534,
+            side: THREE.DoubleSide,
+            flatShading: true
+        } )
+
+    ) );
+    scene.add(mesh)
+
+    var webGeometry = new THREE.RingGeometry(30, 15, 8);
+    var webMaterial = new THREE.MeshPhongMaterial({
+        color: 0x156289,
+        emissive: 0x072534,
+        side: THREE.DoubleSide,
+        flatShading: true
+    });
+    var webMesh = new THREE.Mesh(webGeometry, webMaterial);
+    scene.add(webMesh);
 
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
