@@ -89,97 +89,25 @@ analyzeAudio = (audioPlayer) => {
     var controls;
     controls = new THREE.OrbitControls(camera);  
 
-    //Cubes Details
-    var cubes = new Array();
-    var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5)
-    var cubeMaterial = new THREE.MeshPhongMaterial({
-        color: (Math.random() * 0xffffff),
-        flatShading: false,
-        specular: 0xffffff,
-        shininess: 14,
-        reflectivity: 2,
-        fog: false
-    });
-
-    var i = 0;
-    for(var x = 0; x <= 256; x += 2){
-        var j = 0;
-        cubes[i] = new Array();
-        for(var y = 0; y <= 62; y += 2){
-            cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            cubes[i][j].position.x = (y-30);
-            cubes[i][j].position.y = (0);
-            cubes[i][j].position.z = (x);
-            scene.add(cubes[i][j])
-            j++;
-        }
-        i++;
-    }
-
-    //BackgroundShapes Details
-    var asteroidMesh = new Array()
-    var asteroidGeometry = new THREE.TetrahedronGeometry((Math.random()*5), 2);
-    var asteroidMaterial = new THREE.MeshPhongMaterial({ 
-        color: (Math.random() * 0xffffff), 
-        flatShading: true 
-    });
-
-    var i = 0;
-    for(var x = 0; x < 1; x++){
-        var j = 0;
-        asteroidMesh[i] = new Array();
-        for(var y = 0; y < 1000; y++){
-            asteroidMesh[i][j] = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
-            asteroidMesh[i][j].position.x = ( Math.random() - 0.5 ) * 300;
-            asteroidMesh[i][j].position.y = ( Math.random() - 0.5 ) * 300;
-            asteroidMesh[i][j].position.z = ( Math.random() - 0.5 ) * 300;
-            asteroidMesh[i][j].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
-            asteroidMesh[i][j].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-            scene.add(asteroidMesh[x][j])
-            j++;
-        }
-        i++;
-    }
-    console.log(asteroidMesh)
-
-    var webGeometry = new THREE.RingGeometry(30, 15, 8, 8, 0, 6.3);
-    var webMaterial = new THREE.WireframeGeometry(webGeometry,{
-        color: 0x156289,
-        emissive: 0x072534,
-        side: THREE.DoubleSide,
-        flatShading: true,
-    });
-    var webMesh = new THREE.LineSegments(webMaterial);
-    webMesh.material.depthTest = true;
-    webMesh.material.transparent = true;
-    scene.add(webMesh);
+    var geometry = new THREE.TorusKnotBufferGeometry( 10, 3, 100, 16 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00, flatShading: true } );
+    var torusKnot = new THREE.Mesh( geometry, material );
+    scene.add( torusKnot );
 
     function animate(){        
+        console.log(torusKnot)
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.update();  
-
-        webMesh.rotation.z += 0.01;
-        
+       
         var k = 0;
-        webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
-        for(var i = 0; i < cubes.length; i++) {
-            for(var j = 0; j < cubes[i].length; j++) {
-                var scale = dataArray[k] / 10;
-                cubes[i][j].scale.y = (scale < 1 ? 1 : scale);
-                k += (k < dataArray.length ? 1 : 0);
-            }
-        }
-
-        var k = 0;
-        for(var i = 0; i < asteroidMesh.length; i++) {
-            for(var j = 0; j < asteroidMesh[i].length; j++) {
-                var scale = dataArray[k] / 30;
-                asteroidMesh[i][j].rotation.z += 0.01;
-                k += (k < dataArray.length ? 1 : 0);
-            }
+        torusKnot.scale.x = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
+        torusKnot.scale.y = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
+        torusKnot.scale.z = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
+        for(var i = 0; i < dataArray.length; i++) {
+            k += (k < dataArray.length ? 1 : 0);
         }
         renderer.render(scene, camera)
     }
