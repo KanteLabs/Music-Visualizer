@@ -72,6 +72,13 @@ analyzeAudio = (audioPlayer) => {
     camera.position.y = 50;
     camera.position.z = 50;
     camera.lookAt(scene.position);
+    window.addEventListener( 'resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }, false );
 
     //Controls Details
     var controls;
@@ -129,42 +136,6 @@ analyzeAudio = (audioPlayer) => {
         i++;
     }
     console.log(asteroidMesh)
-    var mesh = new THREE.Object3D();
-    mesh.add( new THREE.LineSegments(
-
-        new THREE.Geometry(),
-
-        new THREE.LineBasicMaterial( {
-            color: 0xffffff,
-            transparent: true,
-            opacity: 0.5
-        } )
-
-    ) );
-
-    mesh.add( new THREE.Mesh(
-
-        new THREE.Geometry(),
-
-        new THREE.MeshPhongMaterial( {
-            color: 0x156289,
-            emissive: 0x072534,
-            side: THREE.DoubleSide,
-            flatShading: true
-        } )
-
-    ) );
-    scene.add(mesh)
-
-    var webGeometry = new THREE.RingGeometry(30, 15, 8);
-    var webMaterial = new THREE.MeshPhongMaterial({
-        color: 0x156289,
-        emissive: 0x072534,
-        side: THREE.DoubleSide,
-        flatShading: true
-    });
-    var webMesh = new THREE.Mesh(webGeometry, webMaterial);
-    scene.add(webMesh);
 
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
@@ -181,15 +152,15 @@ analyzeAudio = (audioPlayer) => {
                 k += (k < dataArray.length ? 1 : 0);
             }
         }
-        
-        // var k = 0;
-        // for(var i = 0; i < asteroidMesh.length; i++) {
-        //     for(var j = 0; j < asteroidMesh[i].length; j++) {
-        //         var scale = dataArray[k] / 30;
-        //         asteroidMesh[i][j].position.z = (scale < 1 ? 1 : scale);
-        //         k += (k < dataArray.length ? 1 : 0);
-        //     }
-        // }
+
+        var k = 0;
+        for(var i = 0; i < asteroidMesh.length; i++) {
+            for(var j = 0; j < asteroidMesh[i].length; j++) {
+                var scale = dataArray[k] / 30;
+                asteroidMesh[i][j].rotation.z += 0.01;
+                k += (k < dataArray.length ? 1 : 0);
+            }
+        }
         renderer.render(scene, camera)
     }
     animate() //gets called 60x per sec to render scene
