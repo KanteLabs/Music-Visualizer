@@ -8,28 +8,24 @@
 			body { margin: 0; background: black}
 			canvas { width: 100%; height: 100% }
             #audioFile{
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 999;
-            color: white;
-            background: transparent;
-            width: 100%;
-            text-decoration: underline;
-            text-transform: capitalize;
+                color: white;
+                background: transparent;
+                text-decoration: underline;
+                text-transform: capitalize;
             }
             audio{
                 position: absolute;
                 bottom: 0em;
                 width: 100%;
             }
-            #oscilloscope {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: salmon;
+            form {
+                position: absolute;
+                background: black;
+                z-index: 999;
+                color: white;
+                opacity: 0.8;
+                display: flex;
+                flex-flow: column;
             }
 		</style>
     </head>
@@ -47,7 +43,12 @@
         };
         firebase.initializeApp(config);
         </script> -->
-        <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
+        <form>
+            <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
+            <input type="radio" name="sceneShape" value="cubeGrid" checked/>Default</br>
+            <input type="radio" name="sceneShape" value="matrix"/>Cube Matrix</br>
+            <input type="radio" name="sceneShape" value="web"/>Web</br>
+        </form>
         <div class="audio-container"></div>
 
         <script src="js/utils/three.min.js"></script>
