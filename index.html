@@ -12,6 +12,10 @@
                 background: transparent;
                 text-decoration: underline;
                 text-transform: capitalize;
+                background: transparent;
+                position: absolute;
+                z-index: 9999;
+                width: 100%;
             }
             audio{
                 position: absolute;
@@ -20,6 +24,7 @@
             }
             form {
                 position: absolute;
+                top: 2em;
                 background: black;
                 z-index: 999;
                 color: white;
@@ -43,13 +48,13 @@
         };
         firebase.initializeApp(config);
         </script> -->
+        <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
         <form>
-            <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
             <input type="radio" name="sceneShape" value="cubeGrid" checked/>Default</br>
             <input type="radio" name="sceneShape" value="matrix"/>Cube Matrix</br>
             <input type="radio" name="sceneShape" value="web"/>Web</br>
         </form>
-        
+
         <div class="audio-container"></div>
 
         <script src="js/utils/three.min.js"></script>
