@@ -89,8 +89,7 @@ analyzeAudio = (audioPlayer) => {
         specular: 0xffffff,
         shininess: 14,
         reflectivity: 2,
-        fog: false,
-        morphTargets: true
+        fog: false
     });
 
     var i = 0;
