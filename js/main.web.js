@@ -102,6 +102,12 @@ analyzeAudio = (audioPlayer) => {
     webMesh.material.transparent = true;
     scene.add(webMesh);
 
+    //Circle Details
+    var circleGeometry = new THREE.SphereGeometry( 17, 20, 20 );
+    var circleMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00, flatShading: true} );
+    var sphere = new THREE.Mesh( circleGeometry, circleMaterial );
+    scene.add( sphere )
+
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
@@ -114,6 +120,11 @@ analyzeAudio = (audioPlayer) => {
         webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         for(var i = 0; i < dataArray.length; i++) {
             k += (k < dataArray.length ? 1 : 0);
+            // directionalLight.to(lights[0].color, 0.2, {
+            //     r: Math.random(),
+            //     g: Math.random(),
+            //     b: Math.random(),
+            // });
         }
         renderer.render(scene, camera)
     }

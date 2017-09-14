@@ -89,26 +89,40 @@ analyzeAudio = (audioPlayer) => {
     var controls;
     controls = new THREE.OrbitControls(camera);  
 
-    var geometry = new THREE.TorusKnotBufferGeometry( 10, 3, 100, 16 );
-    var material = new THREE.MeshBasicMaterial( { color: 0xffff00, flatShading: true } );
-    var torusKnot = new THREE.Mesh( geometry, material );
-    scene.add( torusKnot );
+    //Matrix Details
+    var cubes = new Array();
+    var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5)
+    var cubeMaterial = new THREE.MeshPhongMaterial({
+        color: (Math.random() * 0xffffff),
+        flatShading: false,
+        specular: 0xffffff,
+        shininess: 14,
+        reflectivity: 2,
+        fog: false
+    });
+
+    var i = 0;
+    for(var x = 0; x <= 50; x += 2){
+        var j = 0;
+        cubes[i] = new Array();
+        for(var y = 0; y <= 50; y += 2){
+            cubes[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cubes[i][j].position.x = (y);
+            cubes[i][j].position.y = (0);
+            cubes[i][j].position.z = (x);
+            scene.add(cubes[i][j])
+            j++;
+        }
+        i++;
+    }
 
     function animate(){        
-        console.log(torusKnot)
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.update();  
        
-        var k = 0;
-        torusKnot.scale.x = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
-        torusKnot.scale.y = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
-        torusKnot.scale.z = (dataArray[k] / 50 < 1 ? 1 : dataArray[k] / 50)
-        for(var i = 0; i < dataArray.length; i++) {
-            k += (k < dataArray.length ? 1 : 0);
-        }
         renderer.render(scene, camera)
     }
     animate() //gets called 60x per sec to render scene
