@@ -112,29 +112,23 @@ analyzeAudio = (audioPlayer) => {
     var asteroidGeometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
     var asteroidMaterial = new THREE.MeshPhongMaterial( { color: (Math.random() * 0xffffff), flatShading: false } );
 
-    for(var x = 0; x < 1000; x++){
-        asteroidMesh[x] = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        asteroidMesh[x].position.x = ( Math.random() - 0.5 ) * 300;
-        asteroidMesh[x].position.y = ( Math.random() - 0.5 ) * 300;
-        asteroidMesh[x].position.z = ( Math.random() - 0.5 ) * 300;
-        asteroidMesh[x].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
-        asteroidMesh[x].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-        scene.add(asteroidMesh[x])
+    var i = 0;
+    for(var x = 0; x < 100; x++){
+        var j = 0;
+        asteroidMesh[i] = new Array();
+        for(var y = 0; y < 100; y+=2){
+            asteroidMesh[i][j] = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            asteroidMesh[i][j].position.x = ( Math.random() - 0.5 ) * 100;
+            asteroidMesh[i][j].position.y = ( Math.random() - 0.5 ) * 100;
+            asteroidMesh[i][j].position.z = ( Math.random() - 0.5 ) * 100;
+            asteroidMesh[i][j].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
+            asteroidMesh[i][j].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+            scene.add(asteroidMesh[x][j])
+            j++;
+        }
+        i++;
     }
     console.log(asteroidMesh)
-
-    // for ( var i = 0; i < 500; i ++ ) {
-    //     var mesh = new THREE.Mesh( asteroidGeometry, asteroidMaterial );
-    //     mesh.position.x = ( Math.random() - 0.5 ) * 1000;
-    //     mesh.position.y = ( Math.random() - 0.5 ) * 1000;
-    //     mesh.position.z = ( Math.random() - 0.5 ) * 1000;
-    //     mesh.scale.set(Math.random() * 2, Math.random() * 2, Math.random() * 2)
-    //     mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-    //     mesh.updateMatrix();
-    //     mesh.matrixAutoUpdate = false;
-    //     scene.add( mesh );
-
-    // }
 
     // var sphereGeo = new THREE.SphereGeometry(10, 64, 64)
     // var sphereMaterial = new THREE.MeshPhongMaterial({
@@ -160,6 +154,15 @@ analyzeAudio = (audioPlayer) => {
             for(var j = 0; j < cubes[i].length; j++) {
                 var scale = dataArray[k] / 10;
                 cubes[i][j].scale.y = (scale < 1 ? 1 : scale);
+                k += (k < dataArray.length ? 1 : 0);
+            }
+        }
+        
+        var k = 0;
+        for(var i = 0; i < asteroidMesh.length; i++) {
+            for(var j = 0; j < asteroidMesh[i].length; j++) {
+                var scale = dataArray[k] / 10;
+                asteroidMesh[i][j].scale.z = (scale < 1 ? 1 : scale);
                 k += (k < dataArray.length ? 1 : 0);
             }
         }
