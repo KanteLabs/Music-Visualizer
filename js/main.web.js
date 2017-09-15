@@ -108,6 +108,24 @@ analyzeAudio = (audioPlayer) => {
     var sphere = new THREE.Mesh( circleGeometry, circleMaterial );
     scene.add( sphere )
 
+    var shellGeometry = new THREE.SphereGeometry(100, 50, 50);
+    var shellMaterial = new THREE.WireframeGeometry(shellGeometry,{
+        color: 0x156289,
+        emissive: 0x072534,
+        side: THREE.DoubleSide,
+        flatShading: true,
+    });
+    var shellMesh = new THREE.LineSegments(shellMaterial);
+    shellMesh.material.depthTest = true;
+    shellMesh.material.transparent = true;
+    scene.add(shellMesh);
+
+    //Circle Details
+    var circleGeometry = new THREE.SphereGeometry( 17, 20, 20 );
+    var circleMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00, flatShading: true} );
+    var sphere = new THREE.Mesh( circleGeometry, circleMaterial );
+    scene.add( sphere )
+
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)

@@ -142,29 +142,14 @@ analyzeAudio = (audioPlayer) => {
     }
     console.log(asteroidMesh)
 
-    var webGeometry = new THREE.RingGeometry(30, 15, 8, 8, 0, 6.3);
-    var webMaterial = new THREE.WireframeGeometry(webGeometry,{
-        color: 0x156289,
-        emissive: 0x072534,
-        side: THREE.DoubleSide,
-        flatShading: true,
-    });
-    var webMesh = new THREE.LineSegments(webMaterial);
-    webMesh.material.depthTest = true;
-    webMesh.material.transparent = true;
-    scene.add(webMesh);
-
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.update();  
-
-        webMesh.rotation.z += 0.01;
         
         var k = 0;
-        webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         for(var i = 0; i < cubes.length; i++) {
             for(var j = 0; j < cubes[i].length; j++) {
                 var scale = dataArray[k] / 10;
