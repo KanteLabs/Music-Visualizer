@@ -5,15 +5,18 @@ There will be different rendering outputs depending on the frequency data that i
 ## Basic Progress
 - User can upload a track and see a 2d visualization [x]
 - Can generate a basic shape in the canvas [x]
-- create at least 3 different shapes or scenes
+- create at least 3 different scenes []
+  - cubes [x]
+  - web []
+  - matrix []
+  - abstract []
 - Can generate an array of random shapes as a matrix [x]
   - possible random shapes
     - cylinder []
     - cone []
     - pyramid []
     - prism []
-    - dodecahedron []
-- can generate a random shape on every upload []
+    - dodecahedron [x]
 - camera functions [x]
 - have features of shape determined by song data
   - color []
