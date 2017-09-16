@@ -24,7 +24,7 @@ There will be different rendering outputs depending on the frequency data that i
   - rotation speed []
 - controls option to change certain things
   - camera rotation []
-  - different shapes []
+  - different shapes [] 
   - shape color []
   - shape size []
 - option to choose different scenes []
