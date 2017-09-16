@@ -118,7 +118,7 @@ analyzeAudio = (audioPlayer) => {
 
     //BackgroundShapes Details
     var asteroidMesh = new Array()
-    var asteroidGeometry = new THREE.TetrahedronGeometry((Math.random()*5), 2);
+    var asteroidGeometry = new THREE.TetrahedronGeometry((Math.random() + 0.5 ), 2);
     var asteroidMaterial = new THREE.MeshPhongMaterial({ 
         color: (Math.random() * 0xffffff), 
         flatShading: true 
@@ -162,7 +162,7 @@ analyzeAudio = (audioPlayer) => {
         for(var i = 0; i < asteroidMesh.length; i++) {
             for(var j = 0; j < asteroidMesh[i].length; j++) {
                 var scale = dataArray[k] / 30;
-                asteroidMesh[i][j].rotation.z += 0.01;
+                asteroidMesh[i][j].rotation.z += 0.02;
                 k += (k < dataArray.length ? 1 : 0);
             }
         }
