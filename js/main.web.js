@@ -110,6 +110,7 @@ analyzeAudio = (audioPlayer) => {
     var sphere = new THREE.Mesh( circleGeometry, circleMaterial );
     scene.add( sphere )
 
+    // Giant ShellMesh Details
     var shellGeometry = new THREE.SphereGeometry(100, 50, 50);
     var shellMaterial = new THREE.WireframeGeometry(shellGeometry,{
         color: 0x156289,
@@ -121,25 +122,38 @@ analyzeAudio = (audioPlayer) => {
     shellMesh.material.depthTest = true;
     shellMesh.material.transparent = true;
     scene.add(shellMesh);
-
+    
+    
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.5;
         controls.update();  
-
-        // webMesh.rotation.z += 0.01;
+        
+        sphere.rotation.z += 0.01;
+        
+        
+        
+        
+        
+        tween = new TWEEN.Tween(sphere.material.color).to({r: 0, g: 0, b: 0}, 3000).easing(TWEEN.Easing.Quartic.In)
+        tween.start()
         var k = 0;
-        webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
+        
+            tween.onUpdate(function() {
+                sphere.material.color = ({
+                    r: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10), 
+                    g: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10), 
+                    b: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10),
+                })
+            })
+    
+        TWEEN.update()
         webMeshBack.position.z = -(dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
+        webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         for(var i = 0; i < dataArray.length; i++) {
             k += (k < dataArray.length ? 1 : 0);
-            // directionalLight.to(lights[0].color, 0.2, {
-            //     r: Math.random(),
-            //     g: Math.random(),
-            //     b: Math.random(),
-            // });
         }
         renderer.render(scene, camera)
     }
