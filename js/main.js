@@ -14,6 +14,10 @@ window.onload = function() {
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
         var audioDiv = document.querySelector('.audio-container');
+
+        var gui = new dat.GUI({
+            height: 5  * 32 - 1
+        })
         
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
