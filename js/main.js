@@ -8,8 +8,11 @@ window.onload = function() {
     var pickedShape = form.elements.sceneShape.value;
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
-    var songsRef = firebase
-    let previousSearches = []
+    var songsRef = dbRoot.child('songs')
+    songsRef.on('child_added', snapshot=>{
+        let previousSearches = []
+        console.log(snapshot.val(), snapshot.key)
+    })
     
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
