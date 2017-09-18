@@ -12,9 +12,9 @@ window.onload = function() {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
         console.log(`Now playing ${songName}, with shape ${pickedShape}`)
+        
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
-        var tempUrl = URL.createObjectURL(audioFile[0]);
         var audioDiv = document.querySelector('.audio-container');
 
         //Prevents local memory of audio files so you can create a new instance on upload
@@ -27,8 +27,6 @@ window.onload = function() {
         var songRef = storageRef.child(songName)
         songRef.put(audioFile[0]).then(function(snapshot){
             let dlUrl = snapshot.downloadURL;
-            // this.rootRef = firebase.database().ref();
-            // this.weatherRef = this.rootRef.child('searches')
             databaseRef = firebase.database().ref().child('songs').child(songName.split('.').slice(0, 1).join(' '))
             databaseRef.set(dlUrl)
             console.log("uploaded song");
