@@ -13,18 +13,25 @@ window.onload = function() {
         console.log(`Now playing ${songName}, with shape ${pickedShape}`)
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
+        var tempUrl = URL.createObjectURL(audioFile[0]);
         var audioDiv = document.querySelector('.audio-container');
 
-        var gui = new dat.GUI({
-            height: 5  * 32 - 1
-        })
-        
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
         audioPlayer.controls = true;
         audioPlayer.load(); 
         /*audioPlayer.play(),*/ 
         
+        //Uploads Song to firebase
+        var storageRef = firebase.storage().ref();
+        var songRef = storageRef.child(songName)
+        songRef.put(audioFile[0]).then(function(snapshot){
+            console.log(snapshot.downloadURL)
+            console.log("uploaded song")
+        })
+        .then(res=>(console.log(res)))
+        .catch(err=>console.log(err))
+
         analyzeAudio(audioPlayer);
     }
 
@@ -81,6 +88,7 @@ analyzeAudio = (audioPlayer) => {
     camera.position.y = 50;
     camera.position.z = 50;
     camera.lookAt(scene.position);
+
     window.addEventListener( 'resize', function () {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -92,6 +100,17 @@ analyzeAudio = (audioPlayer) => {
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera);  
+
+    var gui = new dat.GUI({
+        height: 5  * 32 - 1
+    })
+    
+    var options = {
+        camera: {
+            speed: 1
+        },
+    }
+
 
     //Cubes Details
     var cubes = new Array();
@@ -150,9 +169,9 @@ analyzeAudio = (audioPlayer) => {
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotateSpeed = 0.1;
         controls.update();  
-        
+
         var k = 0;
         for(var i = 0; i < cubes.length; i++) {
             for(var j = 0; j < cubes[i].length; j++) {
