@@ -76,7 +76,7 @@ analyzeAudio = (audioPlayer) => {
     var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
     camera.position.x = 32;
     camera.position.y = 50;
-    camera.position.z = 50;
+    camera.position.z = 175;
     camera.lookAt(scene.position);
     window.addEventListener( 'resize', function () {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -107,17 +107,17 @@ analyzeAudio = (audioPlayer) => {
 
     //Circle Details
     var circleGeometry = new THREE.SphereGeometry( 10, 20, 20 );
-    var circleMaterial = new THREE.MeshPhongMaterial( {color: 0x000000, flatShading: false} );
+    var circleMaterial = new THREE.MeshPhongMaterial( {color: 0x000000, flatShading: true} );
     var sphere = new THREE.Mesh( circleGeometry, circleMaterial );
     scene.add( sphere )
 
     // Giant ShellMesh Details
     var shellGeometry = new THREE.SphereGeometry(100, 50, 50);
     var shellMaterial = new THREE.WireframeGeometry(shellGeometry,{
-        color: 0x156289,
+        color: 0xffff00,
         emissive: 0x072534,
         side: THREE.DoubleSide,
-        flatShading: true,
+        flatShading: false,
     });
     var shellMesh = new THREE.LineSegments(shellMaterial);
     shellMesh.material.depthTest = true;
@@ -128,21 +128,30 @@ analyzeAudio = (audioPlayer) => {
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotateSpeed = 1;
         controls.update();  
         
         sphere.rotation.z += 0.01;
         
         var k = 0;
-        
+
+        if(dataArray[k]){
         TweenLite.to(directionalLight1, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
         TweenLite.to(directionalLight2, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
         TweenLite.to(directionalLight3, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
         TweenLite.to(directionalLight4, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
+        }else{
+             null;
+        }
+
+        sphere.scale.x = (dataArray[k] / 30 < 1 ? 1.1 : dataArray[k] / 150);
+        sphere.scale.y = (dataArray[k] / 30 < 1 ? 1.1 : dataArray[k] / 150);
+        sphere.scale.z = (dataArray[k] / 30 < 1 ? 1.1 : dataArray[k] / 150);
         
         webMeshBack.position.z = -(dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         for(var i = 0; i < dataArray.length; i++) {
+            var scale = dataArray[k] / 30;
             k += (k < dataArray.length ? 1 : 0);
         }
         renderer.render(scene, camera)
