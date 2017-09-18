@@ -7,12 +7,15 @@ window.onload = function() {
     var form = document.querySelector('form');
     var pickedShape = form.elements.sceneShape.value;
     var storageRef = firebase.storage().ref();
-
+    var dbRoot = firebase.database().ref();
+    var songsRef = firebase
+    let previousSearches = []
+    
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
         console.log(`Now playing ${songName}, with shape ${pickedShape}`)
-        
+
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
         var audioDiv = document.querySelector('.audio-container');
