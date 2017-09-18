@@ -6,6 +6,7 @@ window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var form = document.querySelector('form');
     var pickedShape = form.elements.sceneShape.value;
+    var storageRef = firebase.storage().ref();
 
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
@@ -23,11 +24,14 @@ window.onload = function() {
         /*audioPlayer.play(),*/ 
         
         //Uploads Song to firebase
-        var storageRef = firebase.storage().ref();
         var songRef = storageRef.child(songName)
         songRef.put(audioFile[0]).then(function(snapshot){
-            console.log(snapshot.downloadURL)
-            console.log("uploaded song")
+            let dlUrl = snapshot.downloadURL;
+            // this.rootRef = firebase.database().ref();
+            // this.weatherRef = this.rootRef.child('searches')
+            databaseRef = firebase.database().ref().child('songs').child(songName.split('.').slice(0, 1).join(' '))
+            databaseRef.set(dlUrl)
+            console.log("uploaded song");
         })
         .then(res=>(console.log(res)))
         .catch(err=>console.log(err))
