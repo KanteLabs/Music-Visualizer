@@ -54,22 +54,23 @@ analyzeAudio = (audioPlayer) => {
     //Lighting Details
     var light = new THREE.AmbientLight(0x505050);
     scene.add(light);
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(0, 1, 1);
-    scene.add(directionalLight);
+
+    var directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight1.position.set(0, 1, 1);
+    scene.add(directionalLight1);
     
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(1, 1, 0);
-    scene.add(directionalLight);
+    directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight2.position.set(1, 1, 0);
+    scene.add(directionalLight2);
     
     
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(0, -1, -1);
-    scene.add(directionalLight);
+    directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight3.position.set(0, -1, -1);
+    scene.add(directionalLight3);
     
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(-1, -1, 0);
-    scene.add(directionalLight);
+    directionalLight4 = new THREE.DirectionalLight(0xffffff, 0.7);
+    directionalLight4.position.set(-1, -1, 0);
+    scene.add(directionalLight4);
 
     //Camera Details
     var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
@@ -123,7 +124,6 @@ analyzeAudio = (audioPlayer) => {
     shellMesh.material.transparent = true;
     scene.add(shellMesh);
     
-    
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
@@ -133,23 +133,13 @@ analyzeAudio = (audioPlayer) => {
         
         sphere.rotation.z += 0.01;
         
-        
-        
-        
-        
-        tween = new TWEEN.Tween(sphere.material.color).to({r: 0, g: 0, b: 0}, 3000).easing(TWEEN.Easing.Quartic.In)
-        tween.start()
         var k = 0;
         
-            tween.onUpdate(function() {
-                sphere.material.color = ({
-                    r: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10), 
-                    g: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10), 
-                    b: Math.random() * (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10),
-                })
-            })
-    
-        TWEEN.update()
+        TweenLite.to(directionalLight1, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
+        TweenLite.to(directionalLight2, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
+        TweenLite.to(directionalLight3, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
+        TweenLite.to(directionalLight4, 1, {intensity: Math.random()* (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)})
+        
         webMeshBack.position.z = -(dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         webMesh.position.z = (dataArray[k] / 10 < 1 ? 1 : dataArray[k] / 10)
         for(var i = 0; i < dataArray.length; i++) {
