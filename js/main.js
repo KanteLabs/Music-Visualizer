@@ -14,13 +14,14 @@ window.onload = function() {
 
     songsRef.on('child_added', snapshot=>{
         previousSearches.push([ snapshot.key, snapshot.val() ])
-        console.log(previousSearches)
-        loadPrevSongs();
         return previousSearches
     })
+    setTimeout(loadPrevSongs, 2000)
+    // loadPrevSongs();
 
 
-    loadPrevSongs = () => {
+    function loadPrevSongs() {
+        console.log(previousSearches)
         previousSearches.map((song, i)=>{
             console.log(song[0], song[1])
             let currSong = document.createElement(`li`)
