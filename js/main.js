@@ -5,6 +5,7 @@ var source;
 var gui = new dat.GUI({
     height: 5  * 32 - 1,
 })
+
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
@@ -39,8 +40,12 @@ window.onload = function() {
         let firebaseURL = e.target.dataset.name;
         var audioPlayer = new Audio(firebaseURL)
         audioPlayer.crossOrigin = "anonymous";
-        var audioDiv = document.querySelector('.audio-container');
+        
+        addAudioPlayer(audioPlayer);
+    }
 
+    function addAudioPlayer(audioPlayer){
+        var audioDiv = document.querySelector('.audio-container');
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
         audioPlayer.controls = true;
@@ -48,7 +53,7 @@ window.onload = function() {
 
         analyzeAudio(audioPlayer);
     }
-
+    
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
@@ -57,14 +62,9 @@ window.onload = function() {
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
         audioPlayer.crossOrigin = "anonymous";
-        var audioDiv = document.querySelector('.audio-container');
 
-        //Prevents local memory of audio files so you can create a new instance on upload
-        audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
-        audioPlayer.controls = true;
-        audioPlayer.load(); 
-        /*audioPlayer.play(),*/ 
-        
+        addAudioPlayer(audioPlayer);
+
         //Uploads Song to firebase
         var songRef = storageRef.child(songName)
         songRef.put(audioFile[0]).then(function(snapshot){
