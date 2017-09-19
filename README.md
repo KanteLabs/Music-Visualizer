@@ -7,21 +7,14 @@ There will be different rendering outputs depending on the frequency data that i
 - Can generate a basic shape in the canvas [x]
 - create at least 3 different scenes []
   - cubes [x]
-  - web []
+  - web [x]
   - matrix []
   - abstract []
 - Can generate an array of random shapes as a matrix [x]
-  - possible random shapes
-    - cylinder []
-    - cone []
-    - pyramid []
-    - prism []
-    - dodecahedron [x]
 - camera functions [x]
-- have features of shape determined by song data
-  - color []
-  - size []
-  - rotation speed []
+- have features of shape determined by song data[x]
+  - color [x]
+  - size [x]
 - controls option to change certain things
   - camera rotation []
   - different shapes [] 
@@ -30,11 +23,9 @@ There will be different rendering outputs depending on the frequency data that i
 - option to choose different scenes []
 
 ## Tech/Tools
-Three.js with WebGL
+  - Three.js with WebGL
   - VR options for Google Cardboard(bonus)
   - Optional Aframe
   - Geometry & Trigonometry
-
-## Table
-Users | Song_id 
-      | Song_link
+  - save song history to firebase
+  
