@@ -9,21 +9,18 @@ window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
     var form = document.querySelector('form');
-    // var pickedShape = form.elements.sceneShape.value;
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
     var songsRef = dbRoot.child('songs')
     
+    //Searches for and loads previous songs uploaded to firebase
     songsRef.on('child_added', snapshot=>{
         previousSearches.push([ snapshot.key, snapshot.val() ])
         return previousSearches
     })
-    setTimeout(loadPrevSongs, 1000)
-    // loadPrevSongs();
-
+    setTimeout(loadPrevSongs, 1000) 
 
     function loadPrevSongs() {
-        console.log(previousSearches)
         previousSearches.map((song, i)=>{
             console.log(song[0], song[1])
             let currSongLi = document.createElement(`li`)
@@ -153,18 +150,20 @@ analyzeAudio = (audioPlayer) => {
         gui = new dat.GUI({
             height: 5  * 32 - 1,
         })
-        gui.add( controls , 'autoRotate', true, false )
-        gui.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
-        gui.add( camera.position , 'x', -500, 500 ).step(5)
-        gui.add( camera.position , 'y', -500, 500 ).step(5)
-        gui.add( camera.position , 'z', -500, 500 ).step(5)
+        var f1 = gui.addFolder('Camera')
+        f1.add( controls , 'autoRotate', true, false )
+        f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
+        f1.add( camera.position , 'x', -500, 500 ).step(5)
+        f1.add( camera.position , 'y', -500, 500 ).step(5)
+        f1.add( camera.position , 'z', -500, 500 ).step(5)
     }else{
         console.log('no gui')
-            gui.add( controls , 'autoRotate', true, false )
-            gui.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
-            gui.add( camera.position , 'x', -500, 500 ).step(5)
-            gui.add( camera.position , 'y', -500, 500 ).step(5)
-            gui.add( camera.position , 'z', -500, 500 ).step(5)
+            var f1 = gui.addFolder('Camera')
+            f1.add( controls , 'autoRotate', true, false )
+            f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
+            f1.add( camera.position , 'x', -500, 500 ).step(5)
+            f1.add( camera.position , 'y', -500, 500 ).step(5)
+            f1.add( camera.position , 'z', -500, 500 ).step(5)
     }
 
     //Cubes Details
