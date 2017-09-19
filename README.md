@@ -27,5 +27,5 @@ There will be different rendering outputs depending on the frequency data that i
   - VR options for Google Cardboard(bonus)
   - Optional Aframe
   - Geometry & Trigonometry
-  - save song history to firebase
+  - save song history to firebase[x]
   

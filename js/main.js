@@ -2,7 +2,9 @@ var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
 var previousSearches = []
 var source;
-
+var gui = new dat.GUI({
+    height: 5  * 32 - 1,
+})
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
@@ -11,12 +13,12 @@ window.onload = function() {
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
     var songsRef = dbRoot.child('songs')
-
+    
     songsRef.on('child_added', snapshot=>{
         previousSearches.push([ snapshot.key, snapshot.val() ])
         return previousSearches
     })
-    setTimeout(loadPrevSongs, 2000)
+    setTimeout(loadPrevSongs, 1000)
     // loadPrevSongs();
 
 
@@ -145,17 +147,25 @@ analyzeAudio = (audioPlayer) => {
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera);  
-
-    var gui = new dat.GUI({
-        height: 5  * 32 - 1
-    })
-    
-    var options = {
-        camera: {
-            speed: 1
-        },
+    if(gui.__controllers.length > 0){
+        console.log('gui already exist')
+        gui.destroy()
+        gui = new dat.GUI({
+            height: 5  * 32 - 1,
+        })
+        gui.add( controls , 'autoRotate', true, false )
+        gui.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
+        gui.add( camera.position , 'x', -500, 500 ).step(5)
+        gui.add( camera.position , 'y', -500, 500 ).step(5)
+        gui.add( camera.position , 'z', -500, 500 ).step(5)
+    }else{
+        console.log('no gui')
+            gui.add( controls , 'autoRotate', true, false )
+            gui.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
+            gui.add( camera.position , 'x', -500, 500 ).step(5)
+            gui.add( camera.position , 'y', -500, 500 ).step(5)
+            gui.add( camera.position , 'z', -500, 500 ).step(5)
     }
-
 
     //Cubes Details
     var cubes = new Array();
@@ -213,8 +223,6 @@ analyzeAudio = (audioPlayer) => {
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.3;
         controls.update();  
 
         var k = 0;
