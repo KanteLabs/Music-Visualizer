@@ -144,26 +144,24 @@ analyzeAudio = (audioPlayer) => {
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera);  
-    if(gui.__controllers.length > 0){
-        console.log('gui already exist')
-        gui.destroy()
-        gui = new dat.GUI({
-            height: 5  * 32 - 1,
-        })
+    function guiControls(){
         var f1 = gui.addFolder('Camera')
         f1.add( controls , 'autoRotate', true, false )
         f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
         f1.add( camera.position , 'x', -500, 500 ).step(5)
         f1.add( camera.position , 'y', -500, 500 ).step(5)
         f1.add( camera.position , 'z', -500, 500 ).step(5)
+    }
+    if(gui.__controllers.length > 0){
+        console.log('gui already exist')
+        gui.destroy()
+            gui = new dat.GUI({
+                height: 5  * 32 - 1,
+            })
+        guiControls();
     }else{
         console.log('no gui')
-            var f1 = gui.addFolder('Camera')
-            f1.add( controls , 'autoRotate', true, false )
-            f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
-            f1.add( camera.position , 'x', -500, 500 ).step(5)
-            f1.add( camera.position , 'y', -500, 500 ).step(5)
-            f1.add( camera.position , 'z', -500, 500 ).step(5)
+        guiControls()
     }
 
     //Cubes Details
