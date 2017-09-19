@@ -1,18 +1,34 @@
 var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
+var previousSearches = []
 var source;
 
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
+    var prevSongs = document.querySelector('#prevSongs');
     var form = document.querySelector('form');
     var pickedShape = form.elements.sceneShape.value;
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
     var songsRef = dbRoot.child('songs')
+
     songsRef.on('child_added', snapshot=>{
-        let previousSearches = []
-        console.log(snapshot.val(), snapshot.key)
+        previousSearches.push([ snapshot.key, snapshot.val() ])
+        console.log(previousSearches)
+        loadPrevSongs();
+        return previousSearches
     })
+
+
+    loadPrevSongs = () => {
+        previousSearches.map((song, i)=>{
+            console.log(song[0], song[1])
+            let currSong = document.createElement(`li`)
+            let songTitle = document.createTextNode(`<p>${song[0]}</p>`)
+            currSong.appendChild(songTitle)
+            prevSongs.appendChild(currSong).dataset.name=(song[1])
+        })
+    }
     
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
