@@ -77,17 +77,15 @@ window.onload = function() {
 }
 
 analyzeAudio = (audioPlayer) => {
-    console.log(`Received ${audioPlayer}`)
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
-    
     source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
     source.connect(analyser)
     analyser.connect(audioCtx.destination)
 
     analyser.fftSize = 256; // 256 for analyser.getByteFrequencyData(dataArray) and 2048 for analyser.getByteTimeDomainData(dataArray)
     var bufferLength = analyser.frequencyBinCount;
-    console.log(bufferLength)
     var dataArray = new Uint8Array(bufferLength)
+    console.log(bufferLength)
 
     //Scene Details
     var scene = new THREE.Scene(); //new scene instance
@@ -136,25 +134,21 @@ analyzeAudio = (audioPlayer) => {
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera);  
-    function guiControls(){
-        var f1 = gui.addFolder('Camera')
-        f1.add( controls , 'autoRotate', true, false )
-        f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
-        f1.add( camera.position , 'x', -500, 500 ).step(5)
-        f1.add( camera.position , 'y', -500, 500 ).step(5)
-        f1.add( camera.position , 'z', -500, 500 ).step(5)
-    }
-    if(gui.__controllers.length > 0){
-        console.log('gui already exist')
-        gui.destroy()
-            gui = new dat.GUI({
-                height: 5  * 32 - 1,
-            })
-        guiControls();
-    }else{
-        console.log('no gui')
-        guiControls()
-    }
+    controls.autoRotate = true;
+
+    gui.destroy()
+
+    gui = new dat.GUI({
+        height: 5  * 32 - 1,
+    })
+    
+    var f1 = gui.addFolder('Camera')
+    f1.add( controls , 'autoRotate', false, true )
+    f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
+    f1.add( camera.position , 'x', -500, 500 ).step(5)
+    f1.add( camera.position , 'y', -500, 500 ).step(5)
+    f1.add( camera.position , 'z', -500, 500 ).step(5)
+    
 
     //Cubes Details
     var cubes = new Array();
@@ -226,9 +220,7 @@ analyzeAudio = (audioPlayer) => {
         var k = 0;
         for(var i = 0; i < asteroidMesh.length; i++) {
             for(var j = 0; j < asteroidMesh[i].length; j++) {
-                var scale = dataArray[k] / 30;
                 asteroidMesh[i][j].rotation.z += 0.02;
-                k += (k < dataArray.length ? 1 : 0);
             }
         }
         renderer.render(scene, camera)
