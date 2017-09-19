@@ -43,27 +43,10 @@ window.onload = function() {
         
         addAudioPlayer(audioPlayer);
     }
-
-    function addAudioPlayer(audioPlayer){
-        var audioDiv = document.querySelector('.audio-container');
-        //Prevents local memory of audio files so you can create a new instance on upload
-        audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
-        audioPlayer.controls = true;
-        audioPlayer.load(); 
-
-        analyzeAudio(audioPlayer);
-    }
     
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
-        console.log(`Now playing ${songName}`)
-
-        //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
-        var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
-        audioPlayer.crossOrigin = "anonymous";
-
-        addAudioPlayer(audioPlayer);
 
         //Uploads Song to firebase
         var songRef = storageRef.child(songName)
@@ -75,13 +58,22 @@ window.onload = function() {
         })
         .then(res=>(console.log(res)))
         .catch(err=>console.log(err))
+        
+        //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
+        var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
+        audioPlayer.crossOrigin = "anonymous";
+        addAudioPlayer(audioPlayer);
+    }
+
+    function addAudioPlayer(audioPlayer){
+        var audioDiv = document.querySelector('.audio-container');
+        //Prevents local memory of audio files so you can create a new instance on upload
+        audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
+        audioPlayer.controls = true;
+        audioPlayer.load(); 
 
         analyzeAudio(audioPlayer);
     }
-
-    // form.onchange = (event) => {
-    //     console.log(event.target.value)
-    // }
 }
 
 analyzeAudio = (audioPlayer) => {
