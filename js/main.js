@@ -39,6 +39,7 @@ window.onload = function() {
         console.log(e.target.dataset.name)
         let firebaseURL = e.target.dataset.name;
         var audioPlayer = new Audio(firebaseURL)
+        audioPlayer.crossOrigin = "anonymous";
         var audioDiv = document.querySelector('.audio-container');
 
         //Prevents local memory of audio files so you can create a new instance on upload
@@ -56,6 +57,7 @@ window.onload = function() {
 
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
+        audioPlayer.crossOrigin = "anonymous";
         var audioDiv = document.querySelector('.audio-container');
 
         //Prevents local memory of audio files so you can create a new instance on upload
@@ -212,7 +214,7 @@ analyzeAudio = (audioPlayer) => {
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.1;
+        controls.autoRotateSpeed = 0.3;
         controls.update();  
 
         var k = 0;
