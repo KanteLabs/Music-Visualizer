@@ -1,0 +1,17 @@
+div#past-songs {
+    background: black;
+    width: 250px;
+    position: absolute;
+    top: 2em;
+    opacity: 0.8;
+    left: -2em;
+}
+
+ul#prevSongs {
+    list-style: none;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    opacity: 1;
+    color: #eee;
+    font-family: cursive;
+}

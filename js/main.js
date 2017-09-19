@@ -7,7 +7,7 @@ window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
     var form = document.querySelector('form');
-    var pickedShape = form.elements.sceneShape.value;
+    // var pickedShape = form.elements.sceneShape.value;
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
     var songsRef = dbRoot.child('songs')
@@ -24,17 +24,35 @@ window.onload = function() {
         console.log(previousSearches)
         previousSearches.map((song, i)=>{
             console.log(song[0], song[1])
-            let currSong = document.createElement(`li`)
-            let songTitle = document.createTextNode(`<p>${song[0]}</p>`)
-            currSong.appendChild(songTitle)
-            prevSongs.appendChild(currSong).dataset.name=(song[1])
+            let currSongLi = document.createElement(`li`)
+            let currSongP = document.createElement(`p`)
+            let songTitle = document.createTextNode(song[0])
+            currSongP.appendChild(songTitle)
+            currSongP.dataset.name=(song[1])
+            currSongLi.appendChild(currSongP)
+            prevSongs.appendChild(currSongLi)
+            currSongLi.addEventListener("click", firebaseSong)
         })
     }
     
+    function firebaseSong(e) { 
+        console.log(e.target.dataset.name)
+        let firebaseURL = e.target.dataset.name;
+        var audioPlayer = new Audio(firebaseURL)
+        var audioDiv = document.querySelector('.audio-container');
+
+        //Prevents local memory of audio files so you can create a new instance on upload
+        audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
+        audioPlayer.controls = true;
+        audioPlayer.load(); 
+
+        analyzeAudio(audioPlayer);
+    }
+
     fileUpload.onchange = (event) => {
         audioFile = event.target.files;
         var songName = audioFile[0].name;
-        console.log(`Now playing ${songName}, with shape ${pickedShape}`)
+        console.log(`Now playing ${songName}`)
 
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
         var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
@@ -60,9 +78,9 @@ window.onload = function() {
         analyzeAudio(audioPlayer);
     }
 
-    form.onchange = (event) => {
-        console.log(event.target.value)
-    }
+    // form.onchange = (event) => {
+    //     console.log(event.target.value)
+    // }
 }
 
 analyzeAudio = (audioPlayer) => {
