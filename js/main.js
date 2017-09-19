@@ -76,7 +76,7 @@ window.onload = function() {
     }
 }
 
-analyzeAudio = (audioPlayer) => {
+function analyzeAudio(audioPlayer) {
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
     source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
     source.connect(analyser)
@@ -201,7 +201,6 @@ analyzeAudio = (audioPlayer) => {
         }
         i++;
     }
-    console.log(asteroidMesh)
 
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
