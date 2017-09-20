@@ -142,6 +142,16 @@ function analyzeAudio(audioPlayer) {
         height: 5  * 32 - 1,
     })
     
+
+    var newShapes = new function(){
+        this.torus = function(){
+            var torusGeometry = new THREE.TorusGeometry( 10, 3, 16, 100 )
+            var torusMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+            var torusBox = new THREE.Mesh( torusGeometry, torusMaterial );
+            scene.add(torusBox)
+        }
+    }
+    
     var f1 = gui.addFolder('Camera')
     f1.add( controls , 'autoRotate', false, true )
     f1.add( controls , 'autoRotateSpeed', 0, 10 ).step(0.5)
@@ -149,7 +159,10 @@ function analyzeAudio(audioPlayer) {
     f1.add( camera.position , 'y', -500, 500 ).step(5)
     f1.add( camera.position , 'z', -500, 500 ).step(5)
     
-
+    var f2 = gui.addFolder('Shapes')
+    f2.add(newShapes, 'torus', false, true)
+    
+    
     //Cubes Details
     var cubes = new Array();
     var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5)
