@@ -15,3 +15,7 @@ ul#prevSongs {
     color: #eee;
     font-family: cursive;
 }
+
+ul li {
+    cursor: pointer;
+}
