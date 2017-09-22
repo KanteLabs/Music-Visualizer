@@ -9,12 +9,7 @@ User's can either upload a song or choose one that has been uploaded by other us
 ![Web](/assets/visual2_zoom.png)
 
 ### Technical Details
-The core of this project was built using THREE.js in order to render the visualizers in canvas.  
-- Three.js with WebGL
-  - VR options for Google Cardboard(bonus)
-  - Optional Aframe
-  - Geometry & Trigonometry
-  - save song history to firebase[x]
+The core of this project was built using THREE.js in order to render the visualizers in canvas. When a user uploads a song to visual it also gets stored in Google Firebase so that the song can be reused by other people. This is also useful for people that do not want to upload a song. Web Audio Api analyzes the song data so that it could be visualized by THREE.js.
   
 ### Sample Code
 This sample code was how I generated the random floating shapes around the scene.
