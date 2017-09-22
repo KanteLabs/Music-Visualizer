@@ -7,6 +7,7 @@ User's can either upload a song or choose one that has been uploaded by other us
 ![Bars](/assets/visual1_zoom.png)
 ### Experimental Web Visualizer
 ![Web](/assets/visual2_zoom.png)
+(Link to Web)[https://kantelabs.github.io/Music-Visualizer/web.html]
 
 ### Technical Details
 The core of this project was built using THREE.js in order to render the visualizers in canvas. When a user uploads a song to visual it also gets stored in Google Firebase so that the song can be reused by other people. This is also useful for people that do not want to upload a song. Web Audio Api analyzes the song data so that it could be visualized by THREE.js.
