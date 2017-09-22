@@ -6,6 +6,34 @@ User's can either upload a song or choose one that has been uploaded by other us
 ### Experimental Web Visualizer
 ![Web](/assets/visual2_zoom.png)
 
+### Sample Code
+This sample code was how I generated the random floating shapes around the scene.
+ 
+```javascript
+ var asteroidMesh = new Array()
+    var asteroidGeometry = new THREE.TetrahedronGeometry((Math.random() + 0.5 ), 2);
+    var asteroidMaterial = new THREE.MeshPhongMaterial({ 
+        color: (Math.random() * 0xffffff), 
+        flatShading: true 
+    });
+
+    var i = 0;
+    for(var x = 0; x < 1; x++){
+        var j = 0;
+        asteroidMesh[i] = new Array();
+        for(var y = 0; y < 1000; y++){
+            asteroidMesh[i][j] = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
+            asteroidMesh[i][j].position.x = ( Math.random() - 0.5 ) * 300;
+            asteroidMesh[i][j].position.y = ( Math.random() - 0.5 ) * 300;
+            asteroidMesh[i][j].position.z = ( Math.random() - 0.5 ) * 300;
+            asteroidMesh[i][j].scale.z = (Math.random() * 2, Math.random() * 2, Math.random() * 2);
+            asteroidMesh[i][j].rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+            scene.add(asteroidMesh[x][j])
+            j++;
+        }
+        i++;
+    }
+```
 ## Main Features
 - User can upload a track and see a 2d visualization [x]
 - Can generate a basic shape in the canvas [x]
