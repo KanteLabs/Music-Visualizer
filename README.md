@@ -9,7 +9,13 @@ User's can either upload a song or choose one that has been uploaded by other us
 ![Web](/assets/visual2_zoom.png)
 
 ### Technical Details
-
+The core of this project was built using THREE.js in order to render the visualizers in canvas.  
+- Three.js with WebGL
+  - VR options for Google Cardboard(bonus)
+  - Optional Aframe
+  - Geometry & Trigonometry
+  - save song history to firebase[x]
+  
 ### Sample Code
 This sample code was how I generated the random floating shapes around the scene.
 
@@ -38,22 +44,14 @@ This sample code was how I generated the random floating shapes around the scene
         i++;
     }
 ```
-## Main Features
-- User can upload a track and see a 2d visualization [x]
-- Can generate a basic shape in the canvas [x]
-- create at least 3 different scenes []
-  - cubes [x]
-  - web [x]
-  - matrix []
-  - abstract []
-- Can generate an array of random shapes as a matrix [x]
-- camera functions [x]
-- have features of shape determined by song data[x]
-  - color [x]
-  - size [x]
-- controls option to change certain things
-  - camera rotation []
-  - different shapes [] 
-  - shape color []
-  - shape size []
-- option to choose different scenes []
+
+### Future Improvements
+  - Incorporate AFrame for VR & smoother interactions []
+  - Basic VR using Google Cardboard []
+  - Include at least 3 music visualizers []
+  - Can generate random shapes around the visualizer []
+  - have certain features determined by song data
+    - color []
+    - size []
+    - shape type? []
+  - option to choose different scenes []
