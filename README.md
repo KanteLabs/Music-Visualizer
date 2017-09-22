@@ -1,7 +1,7 @@
 # Music Visualizer
 User's can either upload a song or choose one that has been uploaded by other users and then see the visualizations for it on their screen. Once a song is uploaded visualizations are created by analyzing the frequency data and waveform with the Web Audio Api. The data is then render with THREE.js. GUI controls are also included to control the camera rotation and positioning. Different songs create different colors and affect how high each bar goes in the visualization.
 
-(View Live Demo Here)[https://kantelabs.github.io/Music-Visualizer/]
+[View Live Demo Here](https://kantelabs.github.io/Music-Visualizer/)
 
 ### Bars - Main Visualizer
 ![Bars](/assets/visual1_zoom.png)
