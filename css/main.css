@@ -5,8 +5,12 @@ div#past-songs {
     top: 2em;
     opacity: 0.8;
     left: -2em;
+    height: 60vh;
+    overflow: auto;
 }
-
+body::-webkit-scrollbar {
+    width: 1em;
+}
 ul#prevSongs {
     list-style: none;
     text-transform: capitalize;

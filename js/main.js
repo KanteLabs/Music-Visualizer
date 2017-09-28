@@ -148,6 +148,7 @@ function analyzeAudio(audioPlayer) {
     f1.add( camera.position , 'x', -500, 500 ).step(5)
     f1.add( camera.position , 'y', -500, 500 ).step(5)
     f1.add( camera.position , 'z', -500, 500 ).step(5)
+    f1.open()
     
 
     //Cubes Details
