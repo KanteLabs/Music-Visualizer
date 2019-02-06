@@ -20,16 +20,8 @@ window.onload = function() {
         previousSearches.push([ snapshot.key, snapshot.val() ])
         return previousSearches
     })
-    
-    if(previousSearches.length) {
-     setTimeout(loadPrevSongs, 1000)
-    } else {
-        document.querySelector('#prevSongs').style.display = "none";
-        var audioPlayer = new Audio(defaultSong)
-        audioPlayer.crossOrigin = "anonymous";
-        
-        addAudioPlayer(defaultSong);
-    }
+
+    setTimeout(loadPrevSongs, 1000)
 
     function loadPrevSongs() {
         previousSearches.map((song, i)=>{
@@ -43,6 +35,13 @@ window.onload = function() {
             prevSongs.appendChild(currSongLi)
             currSongLi.addEventListener("click", firebaseSong)
         })
+        
+        if(!document.querySelector('#prevSongs li')) {
+           document.querySelector('#prevSongs').style.display = "none";
+            var audioPlayer = new Audio(defaultSong)
+            audioPlayer.crossOrigin = "anonymous";
+            addAudioPlayer(defaultSong);
+        }
     }
 
     function firebaseSong(e) { 
