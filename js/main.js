@@ -5,6 +5,7 @@ var source;
 var gui = new dat.GUI({
     height: 5  * 32 - 1,
 })
+var defaultSong = "https://firebasestorage.googleapis.com/v0/b/kantelabs-threejs.appspot.com/o/03%20-%20Smooth%20Operator.mp3?alt=media&token=27e95f4c-b4fb-4160-9bdc-02833cf65a84";
 
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
@@ -19,7 +20,16 @@ window.onload = function() {
         previousSearches.push([ snapshot.key, snapshot.val() ])
         return previousSearches
     })
-    setTimeout(loadPrevSongs, 1000) 
+    
+    if(previousSearches.length) {
+     setTimeout(loadPrevSongs, 1000)
+    } else {
+        document.querySelector('#prevSongs').style.display = "none";
+        var audioPlayer = new Audio(defaultSong)
+        audioPlayer.crossOrigin = "anonymous";
+        
+        addAudioPlayer(defaultSong);
+    }
 
     function loadPrevSongs() {
         previousSearches.map((song, i)=>{
@@ -34,7 +44,7 @@ window.onload = function() {
             currSongLi.addEventListener("click", firebaseSong)
         })
     }
-    
+
     function firebaseSong(e) { 
         console.log(e.target.dataset.name)
         let firebaseURL = e.target.dataset.name;
