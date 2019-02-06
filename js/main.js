@@ -26,7 +26,7 @@ window.onload = function() {
     function loadPrevSongs() {
         var audioPlayer = new Audio(defaultSong)
         audioPlayer.crossOrigin = "anonymous";
-        addAudioPlayer(defaultSong);
+        addAudioPlayer(audioPlayer);
         
         previousSearches.map((song, i)=>{
             console.log(song[0], song[1])
