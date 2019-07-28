@@ -27,9 +27,9 @@ window.onload = function() {
         var audioPlayer = new Audio(defaultSong)
         audioPlayer.crossOrigin = "anonymous";
         addAudioPlayer(audioPlayer);
+        audioCtx.resume();
         
         previousSearches.map((song, i)=>{
-            console.log(song[0], song[1])
             let currSongLi = document.createElement(`li`)
             let currSongP = document.createElement(`p`)
             let songTitle = document.createTextNode(song[0])
