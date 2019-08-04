@@ -47,7 +47,6 @@ window.onload = function() {
         console.log(e.target.dataset.name)
         let firebaseURL = e.target.dataset.name;
         let audioPlayer = document.querySelector('audio');
-        
         audioPlayer.src = firebaseURL;
     }
     
