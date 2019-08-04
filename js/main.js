@@ -10,10 +10,17 @@ var defaultSong = "https://firebasestorage.googleapis.com/v0/b/kantelabs-threejs
 window.onload = function() {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
-    var form = document.querySelector('form');
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
-    var songsRef = dbRoot.child('songs')
+    var songsRef = dbRoot.child('songs');
+    var audioDiv = document.querySelector('.audio-container');
+    var audioPlayer = new Audio(defaultSong)
+    audioPlayer.crossOrigin = "anonymous";
+    addAudioPlayer(audioPlayer);
+
+    document.querySelector('audio').addEventListener("play", () => {
+        audioCtx.resume();
+    })
     
     //Searches for and loads previous songs uploaded to firebase
     songsRef.on('child_added', snapshot=>{
@@ -24,10 +31,6 @@ window.onload = function() {
     setTimeout(loadPrevSongs, 1000)
 
     function loadPrevSongs() {
-        var audioPlayer = new Audio(defaultSong)
-        audioPlayer.crossOrigin = "anonymous";
-        addAudioPlayer(audioPlayer);
-        
         previousSearches.map((song, i)=>{
             let currSongLi = document.createElement(`li`)
             let currSongP = document.createElement(`p`)
@@ -43,10 +46,9 @@ window.onload = function() {
     function firebaseSong(e) { 
         console.log(e.target.dataset.name)
         let firebaseURL = e.target.dataset.name;
-        var audioPlayer = new Audio(firebaseURL)
-        audioPlayer.crossOrigin = "anonymous";
+        let audioPlayer = document.querySelector('audio');
         
-        addAudioPlayer(audioPlayer);
+        audioPlayer.src = firebaseURL;
     }
     
     fileUpload.onchange = (event) => {
@@ -71,17 +73,14 @@ window.onload = function() {
     }
 
     function addAudioPlayer(audioPlayer){
-        var audioDiv = document.querySelector('.audio-container');
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
         audioPlayer.controls = true;
-        audioPlayer.load(); 
+        // audioPlayer.load(); 
 
         analyzeAudio(audioPlayer);
     }
 }
-
-setTimeout(() => { audioCtx.resume()}, 3000);
 
 function analyzeAudio(audioPlayer) {
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
@@ -148,8 +147,8 @@ function analyzeAudio(audioPlayer) {
 
     //Controls Details
     var controls;
-    controls = new THREE.OrbitControls(camera);  
-    controls.autoRotate = true;
+    controls = new THREE.OrbitControls(camera, document.querySelector('canvas'));  
+    controls.autoRotate = false;
 
     gui.destroy()
 
@@ -241,4 +240,13 @@ function analyzeAudio(audioPlayer) {
         renderer.render(scene, camera)
     }
     animate() //gets called 60x per sec to render scene
+}
+
+function unlockAudioContext(audioCtx) {
+    if (audioCtx.state !== 'suspended') return;
+    const b = document.body;
+    const events = ['touchstart','touchend', 'mousedown','keydown'];
+    events.forEach(e => b.addEventListener(e, unlock, false));
+    function unlock() { audioCtx.resume() }
+    function clean() { events.forEach(e => b.removeEventListener(e, unlock)); }
 }
