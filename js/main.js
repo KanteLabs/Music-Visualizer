@@ -29,7 +29,6 @@ window.onload = function() {
         addAudioPlayer(audioPlayer);
         
         previousSearches.map((song, i)=>{
-            console.log(song[0], song[1])
             let currSongLi = document.createElement(`li`)
             let currSongP = document.createElement(`p`)
             let songTitle = document.createTextNode(song[0])
@@ -81,6 +80,8 @@ window.onload = function() {
         analyzeAudio(audioPlayer);
     }
 }
+
+setTimeout(() => { audioCtx.resume()}, 3000);
 
 function analyzeAudio(audioPlayer) {
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
