@@ -100,7 +100,15 @@ function analyzeAudio(audioPlayer) {
 
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight);
-    document.querySelector('canvas') != undefined ? (document.querySelector('canvas').remove(), document.body.appendChild(renderer.domElement)) : document.body.appendChild(renderer.domElement)
+    if(document.querySelector('canvas')) {
+        cancelAnimationFrame(animate);
+        scene.remove.apply(scene, scene.children);
+        document.querySelector('canvas').remove();
+        document.body.appendChild(renderer.domElement);
+        
+    } else {
+        document.body.appendChild(renderer.domElement)
+    }
 
     //Lighting Details
     var light = new THREE.AmbientLight(0x505050);
