@@ -40,29 +40,7 @@
         <link rel="stylesheet" href="css/dat.gui.css"/>
     </head>
     <body>
-        <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-        <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyABAEIKB88h6gU1NOBNk3SGhOztgCH6bUw",
-            authDomain: "kantelabs-threejs.firebaseapp.com",
-            databaseURL: "https://kantelabs-threejs.firebaseio.com",
-            projectId: "kantelabs-threejs",
-            storageBucket: "gs://kantelabs-threejs.appspot.com/",
-            messagingSenderId: "972862435246"
-        };
-        firebase.initializeApp(config);
-        </script>
-        <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
-
-        <div class="audio-container"></div>
-        <div id="past-songs">
-            <ul id="prevSongs">
-                <h3>Previous Songs</h3>
-            </ul>
-        </div>
-
-        <script src="js/utils/three.min.js"></script>
+        <script src="https://threejs.org/build/three.js"></script>
         <script src="js/utils/OrbitControls.js"></script>
         <script src="js/utils/StereoEffect.js"></script>
         <script src="js/utils/ParametricGeometries.js"></script> 

@@ -1,6 +1,5 @@
 var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
-var previousSearches = []
 var source;
 var gui = new dat.GUI({
     height: 5  * 32 - 1,
@@ -8,86 +7,21 @@ var gui = new dat.GUI({
 var defaultSong = "https://firebasestorage.googleapis.com/v0/b/kantelabs-threejs.appspot.com/o/03%20-%20Smooth%20Operator.mp3?alt=media&token=27e95f4c-b4fb-4160-9bdc-02833cf65a84";
 
 window.onload = function() {
-    var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
-    var prevSongs = document.querySelector('#prevSongs');
-    var storageRef = firebase.storage().ref();
-    var dbRoot = firebase.database().ref();
-    var songsRef = dbRoot.child('songs');
-    var audioDiv = document.querySelector('.audio-container');
-    var audioPlayer = new Audio(defaultSong)
-    audioPlayer.crossOrigin = "anonymous";
-    addAudioPlayer(audioPlayer);
-
-    document.querySelector('audio').addEventListener("play", () => {
-        audioCtx.resume();
-    })
-    
-    //Searches for and loads previous songs uploaded to firebase
-    songsRef.on('child_added', snapshot=>{
-        previousSearches.push([ snapshot.key, snapshot.val() ])
-        return previousSearches
-    })
-
-    setTimeout(loadPrevSongs, 1000)
-
-    function loadPrevSongs() {
-        previousSearches.map((song, i)=>{
-            let currSongLi = document.createElement(`li`)
-            let currSongP = document.createElement(`p`)
-            let songTitle = document.createTextNode(song[0])
-            currSongP.appendChild(songTitle)
-            currSongP.dataset.name=(song[1])
-            currSongLi.appendChild(currSongP)
-            prevSongs.appendChild(currSongLi)
-            currSongLi.addEventListener("click", firebaseSong)
-        })
-    }
-
-    function firebaseSong(e) { 
-        console.log(e.target.dataset.name)
-        let firebaseURL = e.target.dataset.name;
-        let audioPlayer = document.querySelector('audio');
-        audioPlayer.src = firebaseURL;
-    }
-    
-    fileUpload.onchange = (event) => {
-        audioFile = event.target.files;
-        var songName = audioFile[0].name;
-
-        //Uploads Song to firebase
-        var songRef = storageRef.child(songName)
-        songRef.put(audioFile[0]).then(function(snapshot){
-            let dlUrl = snapshot.downloadURL;
-            databaseRef = firebase.database().ref().child('songs').child(songName.split('.').slice(0, 1).join(' '))
-            databaseRef.set(dlUrl)
-            console.log("uploaded song");
-        })
-        .then(res=>(console.log(res)))
-        .catch(err=>console.log(err))
-        
-        //Creates a temporary url for the file that was uploaded so that it could be played the audio element 
-        var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
-        audioPlayer.crossOrigin = "anonymous";
-        addAudioPlayer(audioPlayer);
-    }
-
-    function addAudioPlayer(audioPlayer){
-        //Prevents local memory of audio files so you can create a new instance on upload
-        audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
-        audioPlayer.controls = true;
-        // audioPlayer.load(); 
-
-        analyzeAudio(audioPlayer);
-    }
+    analyzeAudio();
 }
 
-function analyzeAudio(audioPlayer) {
+function analyzeAudio(song) {
     // AnalyserNode is necessary to provide real-time frequency and time-domain analysis information. It is an AudioNode that passes the audio stream unchanged from the input to the output, but allows you to take the generated data, process it, and create audio visualizations.
-    source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
-    source.connect(analyser)
-    analyser.connect(audioCtx.destination)
+    var audioMic = navigator.mediaDevices.getUserMedia({audio: true, video: false});
+    audioMic.then((stream) => {
+        source = audioCtx.createMediaStreamSource(stream)
+        source.connect(analyser)
+        analyser.connect(audioCtx.destination);
+        analyser.fftSize = 2048; // 256 for analyser.getByteFrequencyData(dataArray) and 2048 for analyser.getByteTimeDomainData(dataArray)
+        audioCtx.resume();
+    })
 
-    analyser.fftSize = 256; // 256 for analyser.getByteFrequencyData(dataArray) and 2048 for analyser.getByteTimeDomainData(dataArray)
+    // source = audioCtx.createMediaElementSource(audioPlayer) // Uploaded audio becomes the source for the media stream
     var bufferLength = analyser.frequencyBinCount;
     var dataArray = new Uint8Array(bufferLength)
     console.log(bufferLength)
@@ -131,9 +65,9 @@ function analyzeAudio(audioPlayer) {
 
     //Camera Details
     var camera = new THREE.PerspectiveCamera( 65, window.innerWidth/window.innerHeight, 1, 1000 );
-    camera.position.x = 32;
-    camera.position.y = 50;
-    camera.position.z = 50;
+    camera.position.x = 25;
+    camera.position.y = 35;
+    camera.position.z = 100;
     camera.lookAt(scene.position);
 
     window.addEventListener( 'resize', function () {
@@ -168,13 +102,16 @@ function analyzeAudio(audioPlayer) {
     var cubes = new Array();
     var cubeGeometry = new THREE.CubeGeometry( 1.5, 1.5, 1.5)
     var cubeMaterial = new THREE.MeshPhongMaterial({
-        color: (Math.random() * 0xffffff),
+        // color: (Math.random() * 0xffffff),
+        color: (0xffffff),
         flatShading: false,
         specular: 0xffffff,
         shininess: 14,
         reflectivity: 2,
         fog: false
     });
+
+    console.log(cubes)
 
     var i = 0;
     for(var x = 0; x <= 256; x += 2){
@@ -216,6 +153,8 @@ function analyzeAudio(audioPlayer) {
         i++;
     }
 
+    var maxColorValue = 255;
+
     function animate(){        
         requestAnimationFrame(animate) //better than set interval because it pauses when user leaves the page
         analyser.getByteFrequencyData(dataArray)
@@ -239,13 +178,4 @@ function analyzeAudio(audioPlayer) {
         renderer.render(scene, camera)
     }
     animate() //gets called 60x per sec to render scene
-}
-
-function unlockAudioContext(audioCtx) {
-    if (audioCtx.state !== 'suspended') return;
-    const b = document.body;
-    const events = ['touchstart','touchend', 'mousedown','keydown'];
-    events.forEach(e => b.addEventListener(e, unlock, false));
-    function unlock() { audioCtx.resume() }
-    function clean() { events.forEach(e => b.removeEventListener(e, unlock)); }
 }
