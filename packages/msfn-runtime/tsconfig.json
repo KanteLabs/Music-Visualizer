@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "target": "es2020",
+    "moduleResolution": "node"
+  },
+  "include": [
+    "runtime.tsx",
+    "firebase.ts"
+  ]
+}

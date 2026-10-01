@@ -1,0 +1,19 @@
+{
+  "name": "@msfn/music-visualizer",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/runtime.js",
+  "types": "runtime.d.ts",
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node --test lifecycle.test.mjs"
+  },
+  "peerDependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "postcss": "8.5.6"
+  }
+}
