@@ -1,15 +1,113 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var analyser = audioCtx.createAnalyser();
-var previousSearches = []
 var source;
-var gui = new dat.GUI({
-    height: 5 * 32 - 1,
-})
+var gui;
+var resizeVisualizer;
 var defaultSong = "https://firebasestorage.googleapis.com/v0/b/kantelabs-threejs.appspot.com/o/03%20-%20Smooth%20Operator.mp3?alt=media&token=27e95f4c-b4fb-4160-9bdc-02833cf65a84";
 
 window.onload = function () {
     var fileUpload = document.querySelector('#audioFile'); //Grabs the file input and stores it in an variable
     var prevSongs = document.querySelector('#prevSongs');
+    var songSearch = document.querySelector('#song-search');
+    var clearSongSearch = document.querySelector('#clear-song-search');
+    var noMatchingSongs = document.querySelector('#no-matching-songs');
+    var trackTitle = document.querySelector('#track-title');
+    var library = document.querySelector('#past-songs');
+    var libraryToggle = document.querySelector('#library-toggle');
+    var settings = document.querySelector('#camera-settings');
+    var settingsToggle = document.querySelector('#settings-toggle');
+    var narrowLayout = window.matchMedia('(max-width: 700px)');
+    var selectedSong;
+    var currentSongUrl = defaultSong;
+    var searchQuery = '';
+
+    function getSongFilename(url) {
+        try {
+            return decodeURIComponent(new URL(url, document.baseURI).pathname).split('/').pop();
+        } catch {
+            return '';
+        }
+    }
+
+    function updateSearchResults() {
+        var hasNoMatches = searchQuery !== '' && !prevSongs.querySelector('li:not([hidden])');
+        noMatchingSongs.hidden = !hasNoMatches;
+        prevSongs.hidden = hasNoMatches;
+    }
+
+    function filterSongs() {
+        searchQuery = songSearch.value.trim().toLowerCase();
+        for (const item of prevSongs.children) {
+            item.hidden = !item.dataset.searchText.includes(searchQuery);
+        }
+        clearSongSearch.hidden = songSearch.value === '';
+        prevSongs.scrollTop = 0;
+        updateSearchResults();
+    }
+
+    function setLibraryOpen(open) {
+        if (open && narrowLayout.matches) {
+            setSettingsOpen(false);
+            library.showModal();
+        } else if (open) {
+            library.show();
+        } else {
+            library.close();
+        }
+        libraryToggle.hidden = library.open;
+        libraryToggle.setAttribute('aria-expanded', String(library.open));
+    }
+
+    function closeLibrary() {
+        setLibraryOpen(false);
+        libraryToggle.focus();
+    }
+
+    function setSettingsOpen(open) {
+        if (open && narrowLayout.matches && library.open) setLibraryOpen(false);
+        settings.hidden = !open;
+        settingsToggle.setAttribute('aria-expanded', String(open));
+    }
+
+    function syncLibraryLayout() {
+        setLibraryOpen(false);
+        if (!narrowLayout.matches) setLibraryOpen(true);
+    }
+
+    syncLibraryLayout();
+    narrowLayout.addEventListener('change', syncLibraryLayout);
+    libraryToggle.addEventListener('click', () => setLibraryOpen(true));
+    document.querySelector('#library-close').addEventListener('click', closeLibrary);
+    document.querySelector('#add-music').addEventListener('click', () => fileUpload.click());
+    songSearch.addEventListener('input', filterSongs);
+    songSearch.addEventListener('keydown', (event) => {
+        if (event.key.startsWith('Arrow')) event.stopPropagation();
+    });
+    clearSongSearch.addEventListener('click', () => {
+        songSearch.value = '';
+        filterSongs();
+        songSearch.focus();
+    });
+    library.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeLibrary();
+    });
+    library.addEventListener('click', (event) => {
+        if (!narrowLayout.matches || event.target !== library) return;
+        var bounds = library.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX >= bounds.right ||
+            event.clientY < bounds.top || event.clientY >= bounds.bottom) {
+            closeLibrary();
+        }
+    });
+    settingsToggle.addEventListener('click', () => setSettingsOpen(settings.hidden));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !settings.hidden) {
+            setSettingsOpen(false);
+            settingsToggle.focus();
+        }
+    });
+
     var storageRef = firebase.storage().ref();
     var dbRoot = firebase.database().ref();
     var songsRef = dbRoot.child('songs');
@@ -20,45 +118,73 @@ window.onload = function () {
 
     unlockAudioContext(audioCtx);
 
-    document.querySelector('audio').addEventListener("play", () => {
-        audioCtx.resume();
-    })
+    if (window.ResizeObserver) {
+        new ResizeObserver(() => resizeVisualizer()).observe(document.body);
+    } else {
+        window.addEventListener('resize', () => resizeVisualizer());
+    }
 
     //Searches for and loads previous songs uploaded to firebase
     songsRef.on('child_added', snapshot => {
-        previousSearches.push([snapshot.key, snapshot.val()])
-        return previousSearches
-    })
+        const songUrl = snapshot.val();
+        const item = document.createElement('li');
+        const button = document.createElement('button');
+        item.dataset.searchText = (snapshot.key + '\n' + getSongFilename(songUrl)).toLowerCase();
+        item.hidden = !item.dataset.searchText.includes(searchQuery);
+        button.type = 'button';
+        button.textContent = button.title = snapshot.key;
+        button.addEventListener('click', () => {
+            audioPlayer.src = songUrl;
+            setCurrentTrack(snapshot.key, songUrl, button);
+            if (narrowLayout.matches) closeLibrary();
+        });
+        item.appendChild(button);
+        prevSongs.appendChild(item);
+        if (searchQuery) updateSearchResults();
+        if (songUrl === currentSongUrl && !selectedSong) {
+            selectSong(button);
+        }
+    });
 
-    setTimeout(loadPrevSongs, 1000)
-
-    function loadPrevSongs() {
-        previousSearches.map((song, i) => {
-            let currSongLi = document.createElement(`li`)
-            let currSongP = document.createElement(`p`)
-            let songTitle = document.createTextNode(song[0])
-            currSongP.appendChild(songTitle)
-            currSongP.dataset.name = (song[1])
-            currSongLi.appendChild(currSongP)
-            prevSongs.appendChild(currSongLi)
-            currSongLi.addEventListener("click", firebaseSong)
-        })
+    function updatePlayingIndicator() {
+        if (!selectedSong) return;
+        const playing = !audioPlayer.paused && !audioPlayer.ended && !audioPlayer.error &&
+            audioPlayer.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA;
+        selectedSong.toggleAttribute('data-playing', playing);
+        if (playing) {
+            selectedSong.setAttribute('aria-description', 'Playing');
+        } else {
+            selectedSong.removeAttribute('aria-description');
+        }
     }
 
-    function firebaseSong(e) {
-        console.log(e.target.dataset.name)
-        let firebaseURL = e.target.dataset.name;
-        let audioPlayer = document.querySelector('audio');
-        audioPlayer.src = firebaseURL;
+    function selectSong(button) {
+        if (selectedSong) {
+            selectedSong.removeAttribute('aria-current');
+            selectedSong.removeAttribute('data-playing');
+            selectedSong.removeAttribute('aria-description');
+        }
+        selectedSong = button;
+        if (selectedSong) {
+            selectedSong.setAttribute('aria-current', 'true');
+            updatePlayingIndicator();
+        }
+    }
+
+    function setCurrentTrack(name, url, button) {
+        trackTitle.textContent = trackTitle.title = name;
+        currentSongUrl = url;
+        selectSong(button);
     }
 
     fileUpload.onchange = (event) => {
-        audioFile = event.target.files;
-        var songName = audioFile[0].name;
+        var file = event.target.files[0];
+        if (!file) return;
+        var songName = file.name;
 
         //Uploads Song to firebase
         var songRef = storageRef.child(songName)
-        songRef.put(audioFile[0]).then(function (snapshot) {
+        songRef.put(file).then(function (snapshot) {
             let dlUrl = snapshot.downloadURL;
             databaseRef = firebase.database().ref().child('songs').child(songName.split('.').slice(0, 1).join(' '))
             databaseRef.set(dlUrl)
@@ -68,16 +194,21 @@ window.onload = function () {
             .catch(err => console.log(err))
 
         //Creates a temporary url for the file that was uploaded so that it could be played the audio element
-        var audioPlayer = new Audio(URL.createObjectURL(audioFile[0]))
+        audioPlayer = new Audio(URL.createObjectURL(file));
         audioPlayer.crossOrigin = "anonymous";
+        setCurrentTrack(songName, audioPlayer.src);
         addAudioPlayer(audioPlayer);
+        if (narrowLayout.matches) closeLibrary();
     }
 
     function addAudioPlayer(audioPlayer) {
         //Prevents local memory of audio files so you can create a new instance on upload
         audioDiv.firstChild !== null ? (audioDiv.firstElementChild.remove(), (audioDiv.appendChild(audioPlayer))) : audioDiv.appendChild(audioPlayer);
         audioPlayer.controls = true;
-        // audioPlayer.load();
+        audioPlayer.addEventListener('play', () => audioCtx.resume());
+        for (const event of ['playing', 'pause', 'ended', 'emptied', 'waiting', 'seeked', 'error']) {
+            audioPlayer.addEventListener(event, updatePlayingIndicator);
+        }
 
         analyzeAudio(audioPlayer);
     }
@@ -100,7 +231,6 @@ function analyzeAudio(audioPlayer) {
     scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
 
     var renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
     if (document.querySelector('canvas')) {
         cancelAnimationFrame(animate);
         scene.remove.apply(scene, scene.children);
@@ -132,30 +262,29 @@ function analyzeAudio(audioPlayer) {
     scene.add(directionalLight);
 
     //Camera Details
-    var camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 1, 1000);
+    var camera = new THREE.PerspectiveCamera(65, 1, 1, 1000);
     camera.position.x = 32;
     camera.position.y = 50;
     camera.position.z = 50;
     camera.lookAt(scene.position);
 
-    window.addEventListener('resize', function () {
-        camera.aspect = window.innerWidth / window.innerHeight;
+    resizeVisualizer = function () {
+        var width = document.body.clientWidth;
+        var height = document.body.clientHeight;
+        camera.aspect = width / height;
         camera.updateProjectionMatrix();
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-    }, false);
+        renderer.setSize(width, height, false);
+    };
+    resizeVisualizer();
 
     //Controls Details
     var controls;
     controls = new THREE.OrbitControls(camera, document.querySelector('canvas'));
     controls.autoRotate = false;
 
-    gui.destroy()
-
-    gui = new dat.GUI({
-        height: 5 * 32 - 1,
-    })
+    if (gui) gui.destroy();
+    gui = new dat.GUI({ autoPlace: false, width: 262 });
+    document.querySelector('#camera-settings').replaceChildren(gui.domElement);
 
     var f1 = gui.addFolder('Camera')
     f1.add(controls, 'autoRotate', false, true)

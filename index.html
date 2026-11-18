@@ -3,41 +3,9 @@
     <head>
         <title>Music Visualizer</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <style>
-			body { margin: 0; background: black}
-			canvas { width: 100%; height: 100% }
-            #audioFile{
-                color: white;
-                background: transparent;
-                text-decoration: underline;
-                text-transform: capitalize;
-                background: transparent;
-                position: absolute;
-                z-index: 9999;
-                width: 100%;
-            }
-            audio{
-                position: absolute;
-                bottom: 0em;
-                width: 100%;
-            }
-            form {
-                position: absolute;
-                top: 2em;
-                background: black;
-                z-index: 999;
-                color: white;
-                opacity: 0.8;
-                display: flex;
-                flex-flow: column;
-            }
-            .dg.ac {
-                z-index: 99999 !important;
-            }
-        </style>
-        <link rel="stylesheet" href="css/main.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <link rel="stylesheet" href="css/dat.gui.css"/>
+        <link rel="stylesheet" href="css/main.css"/>
     </head>
     <body>
         <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
@@ -53,14 +21,38 @@
         };
         firebase.initializeApp(config);
         </script>
-        <input id="audioFile" name="newAudioFile" type="file" accept="audio/*">
-
-        <div class="audio-container"></div>
-        <div id="past-songs">
-            <ul id="prevSongs">
-                <h3>Previous Songs</h3>
-            </ul>
+        <div class="toolbar" role="group" aria-label="Visualizer controls">
+            <button type="button" id="library-toggle" aria-controls="past-songs" aria-expanded="false">Tracks</button>
+            <button type="button" id="settings-toggle" aria-controls="camera-settings" aria-expanded="false">Settings</button>
         </div>
+
+        <dialog id="past-songs" class="panel library" aria-labelledby="library-title">
+            <div class="library-header">
+                <h2 id="library-title">Track library</h2>
+                <button type="button" id="library-close" aria-label="Close track library" autofocus>×</button>
+            </div>
+            <input id="audioFile" name="newAudioFile" type="file" accept="audio/*" hidden>
+            <button type="button" id="add-music" aria-describedby="audio-disclaimer">Add Music</button>
+            <p id="audio-disclaimer">
+                <strong>User-Provided Audio</strong>
+                Audio is provided by users. We do not supply or control the music played here.
+            </p>
+            <div class="library-search">
+                <span class="search-icon" aria-hidden="true"></span>
+                <input type="search" id="song-search" placeholder="Search songs..." aria-label="Search songs" aria-controls="prevSongs">
+                <button type="button" id="clear-song-search" aria-label="Clear song search" hidden>×</button>
+            </div>
+            <h3>Previous Songs</h3>
+            <p id="no-matching-songs" role="status" hidden>No matching songs</p>
+            <ul id="prevSongs"></ul>
+        </dialog>
+
+        <section id="camera-settings" class="panel settings" aria-label="Camera settings" hidden></section>
+
+        <section class="panel player" aria-label="Audio player">
+            <div id="track-title" title="Smooth Operator" aria-live="polite">Smooth Operator</div>
+            <div class="audio-container"></div>
+        </section>
 
         <script src="js/utils/three.min.js"></script>
         <script src="js/utils/OrbitControls.js"></script>
